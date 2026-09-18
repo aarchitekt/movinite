@@ -130,6 +130,19 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (url === "/api/logout" && req.method === "POST") {
+    const uid = parseCookies(req).fa_uid;
+    if (uid && /^[a-f0-9]{32}$/.test(uid)) {
+      fs.unlink(path.join(STATE_DIR, uid + ".json"), () => {});
+    }
+    res.writeHead(200, {
+      "Content-Type": "application/json; charset=utf-8",
+      "Set-Cookie": "fa_uid=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax",
+    });
+    res.end('{"ok":true}');
+    return;
+  }
+
   if (url === "/" || url === "/index.html") {
     // gzip on the fly for the (small) HTML if the client accepts it
     const ae = req.headers["accept-encoding"] || "";

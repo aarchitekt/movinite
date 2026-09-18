@@ -82,7 +82,7 @@ input,select,textarea{font:inherit;color:inherit}
 }
 .card.behind{transform:scale(.955) translateY(12px);opacity:.55;pointer-events:none;filter:saturate(.7)}
 .card.behind2{transform:scale(.915) translateY(23px);opacity:.28;pointer-events:none;filter:saturate(.5)}
-.hero{position:relative;flex:0 0 auto;aspect-ratio:2/3;overflow:hidden;background:#000}
+.hero{position:relative;flex:0 0 auto;height:clamp(300px,48vh,520px);overflow:hidden;background:#000}
 .hero .poster{position:absolute;inset:0;background-repeat:no-repeat;background-size:1000% 1000%;background-attachment:fixed;transform:scale(1.02)}
 .hero .gen{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center}
 .hero .gen span{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:clamp(22px,6vw,34px);line-height:1.1;color:#fff;text-shadow:0 2px 24px rgba(0,0,0,.6);text-wrap:balance}
@@ -737,17 +737,20 @@ $("#panelClose").addEventListener("click", closePanel);
 
 /* ======================= Onboarding ======================= */
 function seedFilms(){
-  // 44 bewusst gestreute Filme: Kanon, Countrieskino, Genre, Arthouse, Niche
+  // Pick a broad starter set. Poster sheets are optional; gradient title cards
+  // keep the onboarding usable while a richer poster pack is unavailable.
   const pool=[], seenDir=new Set(), byDecade={}, byLang={};
-  const cand = MOVIES.filter(m=>m[F.iv]>2500 && m[F.sh]!=null);
-  cand.sort((a,b)=> (b[F.ir]*Math.log10(b[F.iv])) - (a[F.ir]*Math.log10(a[F.iv])));
+  const hasDirectorData = META.person && META.person.length > 1;
+  const cand = MOVIES.filter(m=>m[F.ti]);
+  cand.sort((a,b)=> ((b[F.ir]||0)*Math.log10((b[F.iv]||1)+1)) - ((a[F.ir]||0)*Math.log10((a[F.iv]||1)+1)));
   for(const m of cand){
-    const d=m[F.d][0], dec=Math.floor(m[F.y]/10), lg=m[F.l];
-    if(d!=null && seenDir.has(d)) continue;
+    const d=m[F.d]?.[0], dec=Math.floor(m[F.y]/10), lg=m[F.l];
+    if(hasDirectorData && d!=null && seenDir.has(d)) continue;
     byDecade[dec]=(byDecade[dec]||0); byLang[lg]=(byLang[lg]||0);
     if(byDecade[dec]>=6) continue;
     if(byLang[lg]>=16) continue;
-    seenDir.add(d); byDecade[dec]++; byLang[lg]++;
+    if(hasDirectorData && d!=null) seenDir.add(d);
+    byDecade[dec]++; byLang[lg]++;
     pool.push(m);
     if(pool.length>=44) break;
   }
@@ -1375,6 +1378,7 @@ function openProfilee(){
       <button class="btn ghost" id="pTheme">Light / Dark</button>
       <button class="btn ghost" id="pWipe">Reset everything</button>
     </div>
+    <button class="btn ghost wide" id="pLogout">Sign out / clear this device</button>
     <p class="note">Saved ${DB?"to your account — synced across devices":"in this browser"}.</p>`;
   openPanel("Profile", html, root=>{
     root.querySelector("#pName").addEventListener("change", e=>{ S.name=e.target.value.trim(); persist(); });
@@ -1412,6 +1416,12 @@ function openProfilee(){
     root.querySelector("#pWipe").onclick = ()=>{
       if(!confirm("Delete your taste profile, lists and bookmarks?")) return;
       S = blankState(); persist(); closePanel(); renderOnboarding(1);
+    };
+    root.querySelector("#pLogout").onclick = async ()=>{
+      if(!confirm("Sign out and clear this device?")) return;
+      try{ await fetch("/api/logout", {method:"POST"}); }catch(e){}
+      try{ localStorage.removeItem(LS); localStorage.removeItem("movinite.theme"); }catch(e){}
+      location.reload();
     };
     root.querySelector("#pCouple").onclick = openCouple;
   });
