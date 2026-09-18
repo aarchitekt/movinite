@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Movinite</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,700&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<title>Movinite — your movie taste</title>
+<link rel="icon" type="image/png" href="/brand/movinite-signet.png">
 <style>
+@font-face{font-family:"Burbank";src:url("/fonts/BurbankBigCondensed-Bold.otf") format("opentype");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"Burbank";src:url("/fonts/BurbankBigCondensed-Black.otf") format("opentype");font-weight:900;font-style:normal;font-display:swap}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 [hidden]{display:none!important}
 img{max-width:100%}
@@ -36,15 +36,15 @@ img{max-width:100%}
 html,body{height:100%}
 body{
   margin:0; background:var(--bg); color:var(--ink);
-  font-family:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
   overscroll-behavior:none;
 }
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--ember);outline-offset:2px;border-radius:6px}
-.mono{font-family:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
-.serif{font-family:"Bodoni Moda","Didot","Times New Roman",serif}
+.mono{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+.serif{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
 
 #app{display:flex;flex-direction:column;height:100%;max-width:560px;margin:0 auto;position:relative}
 
@@ -55,7 +55,12 @@ input,select,textarea{font:inherit;color:inherit}
   border-bottom:1px solid var(--line);background:var(--bg);
   position:sticky;top:0;z-index:30;flex:0 0 auto;
 }
-.brand{font-family:"Bodoni Moda",serif;font-size:20px;letter-spacing:.01em;font-weight:500;margin-right:auto}
+.brand{display:flex;align-items:center;margin-right:auto}.brand em{color:var(--ember);font-style:normal}
+.brandLogo{width:108px;height:34px;position:relative;overflow:hidden;display:block}
+.brandLogo img{position:absolute;left:0;top:-56px;width:108px;height:108px;display:block;max-width:none;filter:invert(1);mix-blend-mode:screen}
+.welcomeMark{width:112px;height:72px;overflow:hidden;margin:0 0 -4px -4px}
+.welcomeMark img{display:block;width:112px;height:112px;max-width:none;filter:invert(1);mix-blend-mode:screen;transform:translateY(-15px)}
+:root[data-theme="light"] .brandLogo img,:root[data-theme="light"] .welcomeMark img{filter:none;mix-blend-mode:multiply}
 .brand em{color:var(--ember);font-style:normal}
 .iconbtn{
   width:36px;height:36px;border-radius:11px;display:grid;place-items:center;
@@ -80,13 +85,13 @@ input,select,textarea{font:inherit;color:inherit}
 .hero{position:relative;flex:0 0 auto;aspect-ratio:2/3;overflow:hidden;background:#000}
 .hero .poster{position:absolute;inset:0;background-repeat:no-repeat;background-size:1000% 1000%;background-attachment:fixed;transform:scale(1.02)}
 .hero .gen{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center}
-.hero .gen span{font-family:"Bodoni Moda",serif;font-size:clamp(22px,6vw,34px);line-height:1.1;color:#fff;text-shadow:0 2px 24px rgba(0,0,0,.6);text-wrap:balance}
+.hero .gen span{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:clamp(22px,6vw,34px);line-height:1.1;color:#fff;text-shadow:0 2px 24px rgba(0,0,0,.6);text-wrap:balance}
 .hero .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,9,14,0) 38%,rgba(10,9,14,.55) 70%,var(--surf) 100%)}
 .hero .grain{position:absolute;inset:0;opacity:.14;mix-blend-mode:overlay;pointer-events:none;
   background-image:radial-gradient(circle at 1px 1px, #fff 1px, transparent 0);background-size:3px 3px}
 .hero .rt{
   position:absolute;left:14px;bottom:12px;z-index:2;display:flex;align-items:baseline;gap:7px;
-  font-family:"Geist Mono",monospace;font-size:13px;color:#fff;letter-spacing:.02em;
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:13px;color:#fff;letter-spacing:.02em;
   background:rgba(10,9,14,.55);backdrop-filter:blur(8px);padding:5px 10px;border-radius:9px;
   border:1px solid rgba(255,255,255,.14);
 }
@@ -94,7 +99,7 @@ input,select,textarea{font:inherit;color:inherit}
 .hero .score{
   position:absolute;right:14px;bottom:12px;z-index:2;display:flex;align-items:center;gap:6px;
   background:rgba(10,9,14,.55);backdrop-filter:blur(8px);padding:5px 10px;border-radius:9px;
-  border:1px solid rgba(255,255,255,.14);font-family:"Geist Mono",monospace;font-size:13px;color:#fff;
+  border:1px solid rgba(255,255,255,.14);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:13px;color:#fff;
 }
 .hero .score i{color:var(--gold);font-style:normal}
 .hero .bookmark{
@@ -110,7 +115,7 @@ input,select,textarea{font:inherit;color:inherit}
 .body{flex:1 1 auto;overflow-y:auto;padding:14px 16px 18px;display:flex;flex-direction:column;gap:11px;-webkit-overflow-scrolling:touch}
 .titleRow{display:flex;align-items:flex-start;gap:10px}
 h2.ftitle{
-  font-family:"Bodoni Moda",serif;font-weight:500;font-size:clamp(21px,5.4vw,27px);
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:600;font-size:clamp(21px,5.4vw,27px);
   line-height:1.12;margin:0;letter-spacing:-.01em;text-wrap:balance;flex:1;
 }
 .orig{font-size:12.5px;color:var(--ink3);margin-top:3px;font-style:italic}
@@ -130,7 +135,7 @@ h2.ftitle{
 .why svg{width:14px;height:14px;flex:0 0 auto;margin-top:2px;stroke:var(--ember);fill:none;stroke-width:1.8}
 
 .stamp{
-  position:absolute;top:26px;z-index:5;font-family:"Geist Mono",monospace;font-size:15px;letter-spacing:.14em;
+  position:absolute;top:26px;z-index:5;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:15px;letter-spacing:.14em;
   padding:8px 14px;border:2.5px solid;border-radius:10px;opacity:0;transform:rotate(-8deg) scale(.85);
   transition:opacity .12s,transform .12s;text-transform:uppercase;font-weight:500;backdrop-filter:blur(4px);
 }
@@ -171,7 +176,7 @@ h2.ftitle{
 }
 .panel.open{transform:translateX(-50%) translateY(0)}
 .panelHead{display:flex;align-items:center;gap:10px;padding:16px 18px 10px;flex:0 0 auto}
-.panelHead h3{margin:0;font-family:"Bodoni Moda",serif;font-weight:500;font-size:20px;flex:1}
+.panelHead h3{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:600;font-size:20px;flex:1}
 .panelBody{overflow-y:auto;padding:4px 18px 22px;display:flex;flex-direction:column;gap:18px}
 .grip{width:38px;height:4px;border-radius:3px;background:var(--line2);margin:8px auto 0}
 
@@ -190,7 +195,7 @@ h2.ftitle{
 .row{display:flex;flex-wrap:wrap;gap:7px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 input[type=range]{width:100%;accent-color:var(--ember);background:transparent}
-.rangeVal{font-family:"Geist Mono",monospace;font-size:13px;color:var(--ember2)}
+.rangeVal{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:13px;color:var(--ember2)}
 .btn{
   padding:12px 18px;border-radius:13px;background:var(--ember);color:#fff;font-weight:600;font-size:14.5px;
   display:flex;align-items:center;justify-content:center;gap:8px;transition:filter .15s;
@@ -204,11 +209,11 @@ input[type=range]{width:100%;accent-color:var(--ember);background:transparent}
 .mitem{display:flex;gap:11px;align-items:center;padding:8px;border-radius:12px;transition:background .15s;text-align:left;width:100%}
 .mitem:hover{background:var(--surf)}
 .mthumb{width:40px;height:60px;border-radius:6px;flex:0 0 auto;background-size:1000% 1000%;background-repeat:no-repeat;background-color:var(--surf3);overflow:hidden;position:relative}
-.mthumb .ini{position:absolute;inset:0;display:grid;place-items:center;font-family:"Bodoni Moda",serif;font-size:17px;color:rgba(255,255,255,.85)}
+.mthumb .ini{position:absolute;inset:0;display:grid;place-items:center;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:17px;color:rgba(255,255,255,.85)}
 .mmeta{flex:1;min-width:0}
 .mmeta .t{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mmeta .s{font-size:12px;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rank{font-family:"Geist Mono",monospace;font-size:13px;color:var(--ink3);width:22px;text-align:right;flex:0 0 auto}
+.rank{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:13px;color:var(--ink3);width:22px;text-align:right;flex:0 0 auto}
 .rank.top{color:var(--gold);font-weight:500}
 
 /* ---------------- dna ---------------- */
@@ -223,12 +228,12 @@ input[type=range]{width:100%;accent-color:var(--ember);background:transparent}
 
 /* ---------------- onboarding ---------------- */
 .ob{flex:1;overflow-y:auto;padding:26px 18px 30px;display:flex;flex-direction:column;gap:20px}
-.obTitle{font-family:"Bodoni Moda",serif;font-size:clamp(28px,8vw,40px);line-height:1.08;margin:0;text-wrap:balance;font-weight:500}
+.obTitle{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:clamp(28px,8vw,40px);line-height:1.08;margin:0;text-wrap:balance;font-weight:700;letter-spacing:-.03em}
 .obTitle em{color:var(--ember);font-style:normal}
 .obSub{color:var(--ink2);font-size:14.5px;line-height:1.6;margin:0;max-width:46ch}
 .seedGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:9px}
 .seed{position:relative;aspect-ratio:185/278;border-radius:10px;overflow:hidden;background-size:1000% 1000%;background-repeat:no-repeat;background-color:var(--surf3);transition:transform .14s;border:2px solid transparent}
-.seed .ini{position:absolute;inset:0;display:grid;place-items:center;padding:6px;text-align:center;font-family:"Bodoni Moda",serif;font-size:12px;line-height:1.15;color:rgba(255,255,255,.9)}
+.seed .ini{position:absolute;inset:0;display:grid;place-items:center;padding:6px;text-align:center;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:12px;line-height:1.15;color:rgba(255,255,255,.9)}
 .seed.on{border-color:var(--ember);transform:scale(.94)}
 .seed.on::after{content:"";position:absolute;inset:0;background:color-mix(in srgb,var(--ember) 26%,transparent)}
 .seed .mark{position:absolute;right:5px;top:5px;width:19px;height:19px;border-radius:50%;background:var(--ember);display:none;place-items:center;z-index:2}
@@ -239,13 +244,13 @@ input[type=range]{width:100%;accent-color:var(--ember);background:transparent}
 .stepbar i.on{background:var(--ember)}
 
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;height:100%;padding:30px;color:var(--ink3)}
-.empty h3{font-family:"Bodoni Moda",serif;font-size:22px;color:var(--ink);margin:0;font-weight:500}
+.empty h3{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:22px;color:var(--ink);margin:0;font-weight:600}
 .note{font-size:12.5px;color:var(--ink3);line-height:1.55}
 .note a{color:var(--ember2)}
 .divider{height:1px;background:var(--line)}
 .statRow{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .stat{background:var(--surf);border:1px solid var(--line);border-radius:13px;padding:11px 12px}
-.stat .v{font-family:"Geist Mono",monospace;font-size:19px;font-weight:500}
+.stat .v{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:19px;font-weight:600}
 .stat .k{font-size:11px;color:var(--ink3);margin-top:1px}
 .toast{
   position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));
@@ -268,21 +273,21 @@ input[type=range]{width:100%;accent-color:var(--ember);background:transparent}
 <body>
 <div id="app">
   <div class="top">
-    <div class="brand">Film<em>abend</em></div>
-    <button class="iconbtn" id="bFilters" title="Mood &amp; Filters" aria-label="Mood und Filters">
+    <div class="brand"><span class="brandLogo"><img src="/brand/movinite-wordmark.png" alt="Movinite"></span></div>
+    <button class="iconbtn" id="bFilters" title="Mood &amp; Filters" aria-label="Mood and filters">
       <svg viewBox="0 0 24 24"><path d="M3 5h18M6 12h12M10 19h4"/></svg></button>
     <span class="iconwrap"><button class="iconbtn" id="bList" title="Bookmarks" aria-label="Bookmarks">
       <svg viewBox="0 0 24 24"><path d="M6 4h12v16l-6-4-6 4z"/></svg></button><span class="badge" id="wlBadge" hidden>0</span></span>
     <button class="iconbtn" id="bProfilee" title="Profile" aria-label="Profile">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c.7-4 3.8-6 7.5-6s6.8 2 7.5 6"/></svg></button>
   </div>
-  <div id="main" class="loadWrap"><div><div class="spin"></div><div class="note">Filmdatenbank wird geladen …</div></div></div>
+  <div id="main" class="loadWrap"><div><div class="spin"></div><div class="note">Loading your movie library…</div></div></div>
 </div>
 <div class="scrim" id="scrim" hidden></div>
 <div class="panel" id="panel" hidden>
   <div class="grip"></div>
   <div class="panelHead"><h3 id="panelTitle"></h3>
-    <button class="iconbtn" id="panelClose" aria-label="Schließen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <button class="iconbtn" id="panelClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="panelBody" id="panelBody"></div>
 </div>
 <div class="toast" id="toast"></div>
@@ -331,7 +336,7 @@ const VIBE_DE = {
 "sci-fi":"Science-Fiction","space":"Countriesraum","time travel":"Zeitreise","future":"Zukunft",
 "artificial intelligence":"künstliche Intelligenz","aliens":"Außerirdische","robots":"Roboter",
 "post-apocalyptic":"postapokalyptisch","fantasy":"Fantasy","magic":"Magie","fairy tale":"Märchen",
-"animation":"Animation","anime":"Anime","musical":"Musical","music":"Music","great soundtrack":"starker Soundtrack",
+"animation":"Animation","anime":"Anime","musical":"Musical","music":"Musik","great soundtrack":"starker Soundtrack",
 "horror":"Horror","zombies":"Zombies","vampires":"Vampire","ghosts":"Geister","supernatural":"übernatürlich",
 "serial killer":"Serienmörder","crime":"Kriminalfilm","heist":"Raub","mafia":"Mafia","gangsters":"Gangster",
 "prison":"Gefängnis","revenge":"Rache","western":"Western","samurai":"Samurai","martial arts":"Kampfkunst",
@@ -348,39 +353,39 @@ const VIBE_DE = {
 "nostalgia":"Nostalgie","80s":"80er","70s":"70er","90s":"90er","christmas":"Weihnachten",
 "good soundtrack":"guter Soundtrack","visually stunning":"visuell umwerfend","imdb top 250":"IMDb Top 250"
 };
-const vibeDE = t => VIBE_DE[t] || t;
+const vibeDE = t => t;
 
-const LANG_DE = {en:"English",de:"German",fr:"French",it:"Italian",es:"Spanish",ja:"Spanish",
+const LANG_DE = {en:"English",de:"Deutsch",fr:"Französisch",it:"Italienisch",es:"Spanisch",ja:"Yespanisch",
 ko:"Koreanisch",zh:"Chinesisch",cn:"Chinesisch",ru:"Russisch",sv:"Schwedisch",da:"Dänisch",no:"Norwegisch",
 fi:"Finnisch",nl:"Niederländisch",pl:"Polnisch",pt:"Portugiesisch",cs:"Tschechisch",hu:"Ungarisch",
 tr:"Türkisch",fa:"Persisch",ar:"Arabisch",hi:"Hindi",th:"Thai",he:"Hebräisch",el:"Griechisch",
 ro:"Rumänisch",sr:"Serbisch",is:"Isländisch",et:"Estnisch",uk:"Ukrainisch",vi:"Vietnamesisch",
 ta:"Tamil",bn:"Bengali",id:"Indonesisch",ca:"Katalanisch",no_:"Norwegisch"};
-const langDE = c => LANG_DE[c] || (c||"").toUpperCase();
+const langDE = c => { try { return new Intl.DisplayNames(["en"], {type:"language"}).of(c) || (c||"").toUpperCase(); } catch(e) { return (c||"").toUpperCase(); } };
 
-const CC_DE = {US:"USA",GB:"UK",DE:"Germany",FR:"France",IT:"Italy",ES:"Spain",JP:"Spain",
+const CC_DE = {US:"USA",GB:"UK",DE:"Deutschland",FR:"Frankreich",IT:"Italien",ES:"Spanien",JP:"Yespan",
 KR:"Südkorea",CN:"China",HK:"Hongkong",TW:"Taiwan",RU:"Russland",SU:"UdSSR",SE:"Schweden",DK:"Dänemark",
 NO:"Norwegen",FI:"Finnland",IS:"Island",NL:"Niederlande",BE:"Belgien",AT:"Österreich",CH:"Schweiz",
 PL:"Polen",CZ:"Tschechien",HU:"Ungarn",RO:"Rumänien",GR:"Griechenland",TR:"Türkei",IR:"Iran",
 IN:"Indien",TH:"Thailand",BR:"Brasilien",AR:"Argentinien",MX:"Mexiko",CL:"Chile",CA:"Kanada",
 AU:"Australien",NZ:"Neuseeland",ZA:"Südafrika",IE:"Irland",PT:"Portugal",IL:"Israel",UA:"Ukraine",
 VN:"Vietnam",ID:"Indonesien",PH:"Philippinen",EG:"Ägypten",MA:"Marokko",SN:"Senegal",BF:"Burkina Faso"};
-const ccDE = c => CC_DE[c] || c;
+const ccDE = c => { try { return new Intl.DisplayNames(["en"], {type:"region"}).of(c) || c; } catch(e) { return c; } };
 
 /* ---------- Moods: jede Mood ist ein Bündel gewichteter Vibe-Tags ---------- */
 const MOODS = [
- {id:"cozy",  n:"Gemütlich",       t:{"heartwarming":1,"feel good movie":1,"funny":.6,"touching":.7,"friendship":.5,"nostalgia":.5},   neg:{"disturbing":1,"gore":1,"depressing":.8}},
- {id:"heavy", n:"Etwas Schweres",  t:{"thought-provoking":1,"melancholy":.9,"emotional":.8,"character study":.8,"existentialism":.6},  neg:{"funny":.5}},
- {id:"tense", n:"Nervenkitzel",    t:{"suspense":1,"tense":1,"psychological":.7,"mystery":.7,"paranoia":.6,"twist ending":.5}},
- {id:"pretty",n:"Augenschmaus",    t:{"visually appealing":1,"beautifully filmed":1,"cinematography":.9,"stylized":.7,"dreamlike":.5}},
- {id:"funny", n:"Zum Lachen",      t:{"funny":1,"hilarious":.9,"witty":.7,"dark comedy":.5,"absurd":.5}},
- {id:"weird", n:"Seltsam & Anders",t:{"weird":1,"surreal":1,"bizarre":.8,"mindfuck":.7,"psychedelic":.6,"nonlinear":.5}},
- {id:"loud",  n:"Laut & Fast",  t:{"action":1,"adventure":.7,"cool":.6,"stylish":.5}, neg:{"slow":1,"quiet":.7}},
- {id:"quiet", n:"Leise & Slow", t:{"slow":1,"quiet":1,"minimalist":.8,"long take":.7,"atmospheric":.6}, neg:{"action":.8}},
- {id:"scared",n:"Gänsehaut",       t:{"horror":1,"creepy":.9,"disturbing":.7,"supernatural":.5,"suspense":.5}},
- {id:"love",  n:"Liebe",           t:{"romance":1,"love story":1,"relationships":.7,"bittersweet":.5}},
- {id:"mind",  n:"Kopfkino",        t:{"cerebral":1,"thought-provoking":.9,"philosophy":.7,"sci-fi":.5,"mindfuck":.6}},
- {id:"true",  n:"Echtes Leben",    t:{"based on a true story":1,"social commentary":.8,"documentary":.5,"politics":.5,"biography":.6}}
+ {id:"cozy",  n:"Cozy",          t:{"heartwarming":1,"feel good movie":1,"funny":.6,"touching":.7,"friendship":.5,"nostalgia":.5},   neg:{"disturbing":1,"gore":1,"depressing":.8}},
+ {id:"heavy", n:"Something heavy", t:{"thought-provoking":1,"melancholy":.9,"emotional":.8,"character study":.8,"existentialism":.6},  neg:{"funny":.5}},
+ {id:"tense", n:"Edge of your seat", t:{"suspense":1,"tense":1,"psychological":.7,"mystery":.7,"paranoia":.6,"twist ending":.5}},
+ {id:"pretty",n:"Eye candy",      t:{"visually appealing":1,"beautifully filmed":1,"cinematography":.9,"stylized":.7,"dreamlike":.5}},
+ {id:"funny", n:"Make me laugh",   t:{"funny":1,"hilarious":.9,"witty":.7,"dark comedy":.5,"absurd":.5}},
+ {id:"weird", n:"Strange & different",t:{"weird":1,"surreal":1,"bizarre":.8,"mindfuck":.7,"psychedelic":.6,"nonlinear":.5}},
+ {id:"loud",  n:"Loud & fast",     t:{"action":1,"adventure":.7,"cool":.6,"stylish":.5}, neg:{"slow":1,"quiet":.7}},
+ {id:"quiet", n:"Quiet & slow",    t:{"slow":1,"quiet":1,"minimalist":.8,"long take":.7,"atmospheric":.6}, neg:{"action":.8}},
+ {id:"scared",n:"Goosebumps",       t:{"horror":1,"creepy":.9,"disturbing":.7,"supernatural":.5,"suspense":.5}},
+ {id:"love",  n:"Love",             t:{"romance":1,"love story":1,"relationships":.7,"bittersweet":.5}},
+ {id:"mind",  n:"Mind-bending",     t:{"cerebral":1,"thought-provoking":.9,"philosophy":.7,"sci-fi":.5,"mindfuck":.6}},
+ {id:"true",  n:"Real life",        t:{"based on a true story":1,"social commentary":.8,"documentary":.5,"politics":.5,"biography":.6}}
 ];
 
 /* ---------- Feature-Gewichte pro Merkmalsart ---------- */
@@ -459,6 +464,19 @@ async function bootStore(){
   const local = loadLocal();
   if(remote && remote.v){ S = remote; if(local && (local.swipes||0) > (remote.swipes||0)) S = local; }
   else S = local || blankState();
+  if(!local && !remote){
+    try{
+      const imported = await fetch("/data/letterboxd.json").then(r=>r.ok?r.json():null);
+      if(imported){
+        S.name = imported.name || "";
+        S.seen = imported.seen || {};
+        S.likes = [...new Set(imported.likes || [])];
+        S.lbx = Date.now();
+        S.born = Date.now();
+        S.swipes = Object.keys(S.seen).length;
+      }
+    }catch(e){}
+  }
   S.filters = Object.assign(defaultFilterss(), S.filters||{});
   if(!S.favs) S.favs=[];
   if(!S.muted) S.muted={};
@@ -623,7 +641,7 @@ function buildQueue(n){
   for(const m of QUEUE) LIKESET.add(m[F.tt]);   // schon im aktuellen Stapel — nicht doppelt nachladen
   const EA = effSnapshot(seed);
   const PA = (S.coupleOn && S.partner && S.partner.n) ? effSnapshot(null, S.partner) : null;
-  const explore = Math.max(0.25 + Math.min(S.swipes/50, 0.0), 0.95 - S.swipes/120);  // more exploration early
+  const explore = Math.max(.12, .95 - S.swipes/70);
   const sessDir = new Map();
   const scored=[];
   for(let i=0;i<MOVIES.length;i++){
@@ -636,9 +654,7 @@ function buildQueue(n){
     }
     sc += nicheAdjust(m, f.niche);
     sc += (m[F.ir]-62)/100*.45;                       // leichte Qualitätsneigung
-    // Increased exploration in early swipes to avoid genre lockdown
-    const rnd = S.swipes < 20 ? (Math.random()-0.5)*explore*4.5 : (Math.random()-0.5)*explore*2.1;
-    sc += rnd;             // Neugier
+    sc += (Math.random()-.5)*explore*2.1;             // Neugier
     scored.push([sc, m]);
   }
   scored.sort((a,b)=>b[0]-a[0]);
@@ -646,7 +662,7 @@ function buildQueue(n){
   for(const [sc,m] of scored){
     const dkey = m[F.d][0];
     const cnt = sessDir.get(dkey)||0;
-    if(cnt>=2 && out.length<n*3) continue;             // Vielfalt: max 2 pro Director
+    if(cnt>=2 && out.length<n*3) continue;             // Vielfalt: max 2 pro Regie
     sessDir.set(dkey,cnt+1);
     out.push(m);
     if(out.length>=n) break;
@@ -655,7 +671,7 @@ function buildQueue(n){
 }
 
 /* ======================= Formatierung ======================= */
-function fmtRt(r){ const h=(r/60)|0, m=r%60; return h? (h+" Std "+(m?m+" Min":"")).trim() : r+" Min"; }
+function fmtRt(r){ const h=(r/60)|0, m=r%60; return h? (h+"h "+(m?m+"m":"")).trim() : r+"m"; }
 function nm(i){ return META.person[i]||"—"; }
 function pretty(k){
   const [t,i]=k.split(":"); const n=+i;
@@ -664,28 +680,28 @@ function pretty(k){
     case "a": return {l:"Cast", v:nm(n)};
     case "w": return {l:"Writer", v:nm(n)};
     case "dp":return {l:"Cinematography", v:nm(n)};
-    case "mu":return {l:"Music", v:nm(n)};
+    case "mu":return {l:"Musik", v:nm(n)};
     case "g": return {l:"Genre", v:META.genre[n]};
     case "c": return {l:"Country", v:ccDE(META.country[n])};
     case "l": return {l:"Language", v:langDE(META.lang[n])};
-    case "k": return {l:"Keyword", v:META.keyword[n]};
+    case "k": return {l:"Theme", v:META.keyword[n]};
     case "v": return {l:"Vibe", v:vibeDE((META.vibe[n]||"").replace(/^#/,""))};
     case "co":return {l:"Studio", v:META.company[n]};
-    case "mv":return {l:"Strömung", v:META.movement[n]};
-    case "aw":return {l:"Preis", v:META.award[n]};
-    case "cl":return {l:"Reihe", v:META.collection[n]};
-    case "dec":return {l:"Yeshrzehnt", v:n+"er"};
-    case "rt":return {l:"Länge", v:["unter 80","80–100","100–120","120–145","145–180","über 180"][n]+" Min"};
-    case "pop":return {l:"Bekanntheit", v:["sehr bekannt","bekannt","solide bekannt","Geheimtipp","Niche","ganz tiefe Niche"][n]};
+    case "mv":return {l:"Movement", v:META.movement[n]};
+    case "aw":return {l:"Award", v:META.award[n]};
+    case "cl":return {l:"Collection", v:META.collection[n]};
+    case "dec":return {l:"Decade", v:n+"s"};
+    case "rt":return {l:"Runtime", v:["under 80","80–100","100–120","120–145","145–180","over 180"][n]+" min"};
+    case "pop":return {l:"Popularity", v:["very popular","popular","well known","hidden gem","niche","deep niche"][n]};
     default: return {l:"", v:k};
   }
 }
 function whyText(m, seed){
   const c = contributions(m, seed).slice(0,3);
-  if(!c.length) return "Frisch aus dem Katalog — noch weiß ich zu wenig über dich.";
+  if(!c.length) return "Fresh from the catalog — I am still learning your taste.";
   const parts = c.map(([k])=>{ const p=pretty(k); return p.v; });
   const uniq=[...new Set(parts)].slice(0,3);
-  return "Passt zu dir: " + uniq.join(" · ");
+  return "Matches your taste: " + uniq.join(" · ");
 }
 function vibeChips(m,max){
   const v=m[F.v], out=[];
@@ -743,19 +759,20 @@ function renderOnboarding(step){
     main.className="ob";
     main.innerHTML = `
       <div class="stepbar"><i class="on"></i><i></i><i></i></div>
-      <h1 class="obTitle">Wir finden heraus, <em>was ihr wirklich mögt</em>.</h1>
-      <p class="obSub">Nicht „Drama, 2019, 7,8 Sterne“. Sondern: skandinavische Winterfilme mit langen Settings. Oder alles, was Roger Deakins gefilmt hat. Je mehr du wischst, desto genauer wird es.</p>
+      <div class="welcomeMark"><img src="/brand/movinite-signet.png" alt="Movinite"></div>
+      <h1 class="obTitle">Let's find out <em>what you really love</em>.</h1>
+      <p class="obSub">Not just “Drama, 2019, 7.8 stars”. Think Scandinavian winter films with long takes, or anything shot by Roger Deakins. The more you swipe, the sharper it gets.</p>
       <div class="field">
-        <label class="lab" for="obName">Wie heißt du?</label>
-        <input class="inp" id="obName" placeholder="Dein Name" autocomplete="given-name" value="${esc(S.name)}">
+        <label class="lab" for="obName">What's your name?</label>
+        <input class="inp" id="obName" placeholder="Your name" autocomplete="given-name" value="${esc(S.name)}">
       </div>
       <div class="statRow">
-        <div class="stat"><div class="v">${(META.n).toLocaleString("de-DE")}</div><div class="k">Filme</div></div>
-        <div class="stat"><div class="v">${META.vibe.length.toLocaleString("de-DE")}</div><div class="k">Vibe-Marker</div></div>
-        <div class="stat"><div class="v">${META.person.length.toLocaleString("de-DE")}</div><div class="k">Namen</div></div>
+        <div class="stat"><div class="v">${(META.n).toLocaleString("en-US")}</div><div class="k">Movies</div></div>
+        <div class="stat"><div class="v">${META.vibe.length.toLocaleString("en-US")}</div><div class="k">Vibe tags</div></div>
+        <div class="stat"><div class="v">${META.person.length.toLocaleString("en-US")}</div><div class="k">People</div></div>
       </div>
-      <button class="btn wide" id="obNext">Weiter</button>
-      <p class="note">Daten aus IMDb, TMDB, dem MovieLens-Tag-Genome und Wikidata. Alles, was du wischst, bleibt bei dir.</p>`;
+      <button class="btn wide" id="obNext">Continue</button>
+      <p class="note">Data from IMDb, TMDB, the MovieLens Tag Genome and Wikidata. Everything you swipe stays yours.</p>`;
     $("#obNext").onclick = ()=>{ S.name = $("#obName").value.trim(); persist(); renderOnboarding(2); };
     return;
   }
@@ -765,10 +782,10 @@ function renderOnboarding(step){
     main.className="ob";
     main.innerHTML = `
       <div class="stepbar"><i class="on"></i><i class="on"></i><i></i></div>
-      <h1 class="obTitle">Tipp alles an, was du <em>liebst</em>.</h1>
-      <p class="obSub">Fünf reichen, zwanzig sind besser. Nur das, was dich wirklich trifft — nicht das, was man gut finden soll.</p>
+      <h1 class="obTitle">Tap everything you <em>love</em>.</h1>
+      <p class="obSub">Five is enough, twenty is better. Pick what genuinely moves you — not what you think you should like.</p>
       <div class="seedGrid" id="seedGrid"></div>
-      <button class="btn wide" id="obNext2">Weiter <span id="seedCount" class="mono"></span></button>`;
+      <button class="btn wide" id="obNext2">Continue <span id="seedCount" class="mono"></span></button>`;
     const grid = $("#seedGrid");
     grid.innerHTML = pool.map(m=>{
       const ps = posterStyle(m);
@@ -793,11 +810,11 @@ function renderOnboarding(step){
   main.className="ob";
   main.innerHTML = `
     <div class="stepbar"><i class="on"></i><i class="on"></i><i class="on"></i></div>
-    <h1 class="obTitle">Hast du <em>Letterboxd</em>?</h1>
-    <p class="obSub">Dann startet dein Tastesprofil nicht bei null, sondern kennt jeden Film, den du je eingetragen hast. Der Import dauert zehn Sekunden.</p>
+    <h1 class="obTitle">Do you use <em>Letterboxd</em>?</h1>
+    <p class="obSub">Your taste profile can start with every film you've logged. The import takes about ten seconds.</p>
     ${letterboxdBlock()}
     <div class="divider"></div>
-    <button class="btn wide" id="obDone">Los geht's</button>`;
+    <button class="btn wide" id="obDone">Let's go</button>`;
   wireLetterboxd(main);
   $("#obDone").onclick = ()=>{ S.born = Date.now(); persist(); renderDeck(); };
 }
@@ -806,10 +823,10 @@ function letterboxdBlock(){
   return `
   <div class="field">
     <div class="note">
-      <b style="color:var(--ink2)">So kommst du an deine Datei:</b><br>
-      1. Öffne <a href="https://letterboxd.com/settings/data/" target="_blank" rel="noopener">letterboxd.com/settings/data</a><br>
-      2. Klick auf <b style="color:var(--ink2)">Export your data</b> — du bekommst eine ZIP-Datei<br>
-      3. Pack sie aus und lade hier <code>watched.csv</code>, <code>ratings.csv</code> oder <code>watchlist.csv</code> hoch (mehrere auf einmal geht auch)
+      <b style="color:var(--ink2)">How to get your file:</b><br>
+      1. Open <a href="https://letterboxd.com/settings/data/" target="_blank" rel="noopener">letterboxd.com/settings/data</a><br>
+      2. Click <b style="color:var(--ink2)">Export your data</b> — you'll get a ZIP file<br>
+      3. Unzip it and upload <code>watched.csv</code>, <code>ratings.csv</code> or <code>watchlist.csv</code> here (you can select multiple)
     </div>
     <input class="inp" type="file" id="lbxFile" accept=".csv,text/csv" multiple>
     <div class="note" id="lbxMsg"></div>
@@ -847,7 +864,7 @@ function wireLetterboxd(root){
     }
     S.lbx = Date.now(); S.swipes += hit;
     persist();
-    msg.innerHTML = `<b style="color:var(--yes)">${hit} Filme übernommen</b>${rated?`, davon ${rated} mit Bewertung`:""}${miss?` · ${miss} nicht in der Database gefunden`:""}.`;
+    msg.innerHTML = `<b style="color:var(--yes)">${hit} movies imported</b>${rated?`, ${rated} with ratings`:""}${miss?` · ${miss} not found in the database`:""}.`;
     inp.value="";
   });
 }
@@ -897,7 +914,7 @@ function renderDeck(){
   const acts = document.createElement("div");
   acts.className="actions";
   acts.innerHTML = `
-    <button class="act small" id="aUndo" title="Zurück" aria-label="Zurück"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/></svg></button>
+    <button class="act small" id="aUndo" title="Undo" aria-label="Undo"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/></svg></button>
     <button class="act no" id="aNo" title="No" aria-label="No"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <button class="act seen" id="aSeen" title="Already watched" aria-label="Already watched"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></svg></button>
     <button class="act yes" id="aYes" title="Yes" aria-label="Yes"><svg viewBox="0 0 24 24"><path d="M12 20s-7.5-4.7-7.5-10A4.5 4.5 0 0112 7.2 4.5 4.5 0 0119.5 10c0 5.3-7.5 10-7.5 10z"/></svg></button>`;
@@ -952,7 +969,7 @@ function cardHTML(m){
       ${country?`<span>${esc(country)}</span><span class="dot"></span>`:""}
       <span>${esc(langDE(META.lang[m[F.l]]))}</span>
       ${cert?`<span class="dot"></span><span>ab ${esc(cert)}</span>`:""}
-      ${m[F.bw]?`<span class="dot"></span><span>schwarzweiß</span>`:""}
+      ${m[F.bw]?`<span class="dot"></span><span>black &amp; white</span>`:""}
     </div>
     <div class="chips">${genres.map(g=>`<span class="chip">${esc(g)}</span>`).join("")}</div>
     ${vibes.length?`<div class="chips">${vibes.map(v=>`<span class="chip vibe">${esc(v)}</span>`).join("")}</div>`:""}
@@ -1014,7 +1031,7 @@ function attachDrag(card){
     if(on){ S.likes = S.likes.filter(x=>x!==tt); }
     else { S.likes.push(tt); }
     bm.classList.toggle("on", !on);
-    bm.title = bm.ariaLabel = !on ? "Remove bookmark nehmen" : "Bookmark";
+    bm.title = bm.ariaLabel = !on ? "Remove bookmark" : "Bookmark";
     persist(); updateBadge();
     toast(!on?"Bookmarked.":"Removed from bookmarks.");
   });
@@ -1088,13 +1105,13 @@ function decide(kind){
     if(QUEUE.length<6) refillQueue();
     paint();
     if(kind===0) askSeenRating(m);
-    if(S.swipes===12) toast("Dein Profile greift jetzt — die Vorschläge werden schärfer.");
+    if(S.swipes===12) toast("Your profile is taking shape — recommendations are getting sharper.");
   }, 240);
 }
 function askSeenRating(m){
   const box = document.createElement("div");
   box.className="seenAsk";
-  box.innerHTML = `<button data-v="1.3">War super</button><button data-v="0">War okay</button><button data-v="-0.9">Mochte ich nicht</button>`;
+  box.innerHTML = `<button data-v="1.3">Loved it</button><button data-v="0">It was okay</button><button data-v="-0.9">Not for me</button>`;
   main.appendChild(box);
   const kill = ()=>box.remove();
   const t = setTimeout(kill, 4200);
@@ -1104,12 +1121,12 @@ function askSeenRating(m){
     if(v>0){ learn(m, v); S.seen[m[F.tt]]=2; if(!S.favs.includes(m[F.tt]) && S.favs.length<50) {} }
     else if(v<0){ learn(m, v); S.seen[m[F.tt]]=0; }
     persist(); clearTimeout(t); kill();
-    toast(v>0?"Bookmarked — more like this.":v<0?"Bookmarked — less like this.":"Thanks.");
+    toast(v>0?"Got it — show me more like this.":v<0?"Got it — show me less like this.":"Thanks.");
   });
 }
 function undo(){
   const h = HIST.pop();
-  if(!h){ toast("Nichts zum Zurücknehmen."); return; }
+  if(!h){ toast("Nothing to undo."); return; }
   for(const k in h.w){ S.w[k]=h.w[k]; S.n[k]=h.n[k]; }
   const m = BYID.get(h.tt);
   if(h.kind===1) S.likes = S.likes.filter(x=>x!==h.tt);
@@ -1118,7 +1135,7 @@ function undo(){
   S.swipes = Math.max(0,S.swipes-1);
   if(m) QUEUE.unshift(m);
   persist(); updateBadge(); paint();
-  toast("Zurückgenommen.");
+  toast("Undone.");
 }
 
 /* ======================= Filters-Panel ======================= */
@@ -1130,48 +1147,48 @@ function openFilterss(){
   for(const m of MOVIES) for(const p of m[F.pv]) provCount[p]=(provCount[p]||0)+1;
   const topProvs = Object.entries(provCount).sort((a,b)=>b[1]-a[1]).slice(0,12).map(x=>+x[0]);
   const html = `
-    <div class="field"><span class="lab">Mood heute Abend</span>
+    <div class="field"><span class="lab">Mood tonight</span>
       <div class="row">${MOODS.map(mo=>`<button class="toggle ${f.moods.includes(mo.id)?"on":""}" data-mood="${mo.id}">${mo.n}</button>`).join("")}</div></div>
 
-    <div class="field"><span class="lab">Freie Schlagwörter</span>
-      <input class="inp" id="fWords" placeholder="z. B. Schnee, Tarkowski, Neon, Schweden, Deakins" value="${esc(f.words)}">
-      <div class="note">Cast Komma trennen. Funktioniert für Vibes, Themen, Namen und Länder.</div></div>
+    <div class="field"><span class="lab">Free keywords</span>
+      <input class="inp" id="fWords" placeholder="e.g. snow, Tarkovsky, neon, Sweden, Deakins" value="${esc(f.words)}">
+      <div class="note">Separate cast members with commas. Works for vibes, themes, people and countries.</div></div>
 
-    <div class="field"><span class="lab">Referenzfilme — „so etwas wie …“</span>
-      <input class="inp" id="fRef" placeholder="Filmtitel tippen und auswählen">
+    <div class="field"><span class="lab">Reference films — “something like…”</span>
+      <input class="inp" id="fRef" placeholder="Type a film title and choose it">
       <div id="refHits" class="mlist"></div>
       <div class="row" id="refList">${f.refs.map(tt=>{const m=BYID.get(tt);return m?`<button class="toggle on" data-ref="${tt}">${esc(m[F.ti])} ✕</button>`:"";}).join("")}</div></div>
 
-    <div class="two">
-      <div class="field"><span class="lab">Ab Yeshr <span class="rangeVal" id="vFrom">${f.yFrom}</span></span>
+      <div class="two">
+      <div class="field"><span class="lab">From <span class="rangeVal" id="vFrom">${f.yFrom}</span></span>
         <input type="range" id="fFrom" min="1920" max="2026" value="${f.yFrom}"></div>
-      <div class="field"><span class="lab">Bis Yeshr <span class="rangeVal" id="vTo">${f.yTo}</span></span>
+      <div class="field"><span class="lab">To <span class="rangeVal" id="vTo">${f.yTo}</span></span>
         <input type="range" id="fTo" min="1920" max="2026" value="${f.yTo}"></div>
     </div>
 
-    <div class="field"><span class="lab">Höchstens <span class="rangeVal" id="vRt">${fmtRt(f.rtMax)}</span></span>
+    <div class="field"><span class="lab">Maximum runtime <span class="rangeVal" id="vRt">${fmtRt(f.rtMax)}</span></span>
       <input type="range" id="fRt" min="60" max="300" step="5" value="${f.rtMax}"></div>
 
-    <div class="field"><span class="lab">Wie tief in die Niche? <span class="rangeVal" id="vNiche">${nicheLabel(f.niche)}</span></span>
+    <div class="field"><span class="lab">How deep into the niche? <span class="rangeVal" id="vNiche">${nicheLabel(f.niche)}</span></span>
       <input type="range" id="fNiche" min="0" max="100" value="${f.niche}">
-      <div class="note">Links: Filme, die jeder kennt. Rechts: Sachen, die außer dir kaum jemand gesehen hat.</div></div>
+      <div class="note">Left: films everyone knows. Right: films almost nobody but you has seen.</div></div>
 
     <div class="field"><span class="lab">Language</span>
       <div class="row">${topLangs.map(([c,i])=>`<button class="toggle ${f.langs.includes(i)?"on":""}" data-lang="${i}">${langDE(c)}</button>`).join("")}</div></div>
 
-    <div class="field"><span class="lab">Wo du es streamen kannst</span>
+    <div class="field"><span class="lab">Where you can stream it</span>
       <div class="row">${topProvs.map(i=>`<button class="toggle ${f.provs.includes(i)?"on":""}" data-prov="${i}">${esc(META.provider[i])}</button>`).join("")}</div>
-      <div class="note">Availability in DE, last data sync.</div></div>
+      <div class="note">Availability in Germany, based on the latest data sync.</div></div>
 
-    <div class="field"><span class="lab">Kein Bock auf</span>
+    <div class="field"><span class="lab">Not in the mood for</span>
       <div class="row">${META.genre.map((g,i)=>`<button class="toggle ${f.exG.includes(i)?"on":""}" data-exg="${i}">${esc(g)}</button>`).join("")}</div></div>
 
-    <div class="field"><span class="lab">Already watchede Filme</span>
-      <div class="row"><button class="toggle ${f.onlyUnseen?"on":""}" id="fUnseen">ausblenden</button></div></div>
+    <div class="field"><span class="lab">Already watched films</span>
+      <div class="row"><button class="toggle ${f.onlyUnseen?"on":""}" id="fUnseen">Hide them</button></div></div>
 
     <div class="two">
-      <button class="btn ghost" id="fReset">Zurücksetzen</button>
-      <button class="btn" id="fApply">Anwenden</button>
+      <button class="btn ghost" id="fReset">Reset</button>
+      <button class="btn" id="fApply">Apply</button>
     </div>`;
   openPanel("Mood & Filters", html, root=>{
     const f2 = S.filters;
@@ -1205,11 +1222,11 @@ function openFilterss(){
         `<button class="toggle on" data-ref="${tt}">${esc(m[F.ti])} ✕</button>`);
       ref.value=""; hits.innerHTML="";
     });
-    root.querySelector("#fReset").onclick = ()=>{ S.filters=defaultFilterss(); persist(); closePanel(); refillQueue(); paint(); toast("Filters zurückgesetzt."); };
-    root.querySelector("#fApply").onclick = ()=>{ f2.words = root.querySelector("#fWords").value; persist(); closePanel(); refillQueue(); paint(); toast("Neuer Stapel."); };
+    root.querySelector("#fReset").onclick = ()=>{ S.filters=defaultFilterss(); persist(); closePanel(); refillQueue(); paint(); toast("Filters reset."); };
+    root.querySelector("#fApply").onclick = ()=>{ f2.words = root.querySelector("#fWords").value; persist(); closePanel(); refillQueue(); paint(); toast("New stack ready."); };
   });
 }
-function nicheLabel(v){ return v<15?"Nur Bekanntes":v<35?"Eher bekannt":v<55?"Gemischt":v<75?"Gern abseits":v<90?"Tiefe Niche":"Ganz tief"; }
+function nicheLabel(v){ return v<15?"Known titles only":v<35?"Mostly known":v<55?"Mixed":v<75?"Off the beaten path":v<90?"Deep niche":"Ultra niche"; }
 function searchMovies(q, n){
   const qq = normT(q); const out=[];
   for(const m of MOVIES){
@@ -1231,13 +1248,13 @@ function miniRow(m, attrs){
 function openLists(){
   const tabs = [["like","Bookmarks",S.likes],
                 ["seen","Seen",Object.keys(S.seen).map(Number)],
-                ["nope","Aussortiert",Object.keys(S.nopes).map(Number)]];
+                ["nope","Passed",Object.keys(S.nopes).map(Number)]];
   const body = tabs.map(([id,label,arr])=>`
     <div class="field" data-tab="${id}" ${id!=="like"?"hidden":""}>
       ${arr.length?`<div class="mlist">${arr.slice().reverse().slice(0,150).map(tt=>{const m=BYID.get(tt);return m?miniRow(m,`data-open="${tt}"`):"";}).join("")}</div>`
-        :`<p class="note">Noch nichts hier.</p>`}
+        :`<p class="note">Nothing here yet.</p>`}
     </div>`).join("");
-  openPanel("Deine Listen", `
+  openPanel("Your lists", `
     <div class="row">${tabs.map(([id,label,arr],i)=>`<button class="toggle ${i===0?"on":""}" data-t="${id}">${label} <span class="mono" style="opacity:.6">${arr.length}</span></button>`).join("")}</div>
     ${body}`, root=>{
       root.addEventListener("click", e=>{
@@ -1266,18 +1283,18 @@ function showFilm(tt){
     ${m[F.s]?`<p class="synopsis">${esc(m[F.s])}</p>`:""}
     <div class="chips">${vibeChips(m,6).map(v=>`<span class="chip vibe">${esc(v)}</span>`).join("")}</div>
     <div class="two">
-      <button class="btn ghost" id="dFav">${fav?"Aus Favoriten":"Zu Favoriten"}</button>
-      <button class="btn ghost" id="dSeen">${seen?"Nicht gesehen":"Als gesehen"}</button>
+      <button class="btn ghost" id="dFav">${fav?"Remove from favorites":"Add to favorites"}</button>
+      <button class="btn ghost" id="dSeen">${seen?"Mark unseen":"Mark as seen"}</button>
     </div>
-    <button class="btn wide ghost" id="dLike">${liked?"Von Bookmarks nehmen":"Auf die Bookmarks"}</button>
+    <button class="btn wide ghost" id="dLike">${liked?"Remove bookmark":"Add bookmark"}</button>
   `, root=>{
     root.querySelector("#dFav").onclick=()=>{
       if(fav) S.favs=S.favs.filter(x=>x!==tt); else S.favs.unshift(tt);
-      persist(); closePanel(); toast(fav?"Aus Favoriten entfernt.":"Zu den Favoriten.");
+      persist(); closePanel(); toast(fav?"Removed from favorites.":"Added to favorites.");
     };
     root.querySelector("#dSeen").onclick=()=>{
       if(seen) delete S.seen[tt]; else S.seen[tt]=1;
-      persist(); closePanel(); toast(seen?"Wieder als ungesehen.":"Als gesehen markiert.");
+      persist(); closePanel(); toast(seen?"Marked unseen.":"Marked as seen.");
     };
     root.querySelector("#dLike").onclick=()=>{
       if(liked) S.likes=S.likes.filter(x=>x!==tt); else S.likes.push(tt);
@@ -1315,55 +1332,55 @@ function openProfilee(){
   const html = `
     <div class="field">
       <label class="lab" for="pName">Name</label>
-      <input class="inp" id="pName" value="${esc(S.name)}" placeholder="Dein Name">
+      <input class="inp" id="pName" value="${esc(S.name)}" placeholder="Your name">
     </div>
     <div class="statRow">
-      <div class="stat"><div class="v">${S.swipes}</div><div class="k">Entscheidungen</div></div>
-      <div class="stat"><div class="v">${seenN}</div><div class="k">gesehen</div></div>
-      <div class="stat"><div class="v">${S.likes.length}</div><div class="k">bookmarked</div></div>
+      <div class="stat"><div class="v">${S.swipes}</div><div class="k">Swipes</div></div>
+      <div class="stat"><div class="v">${seenN}</div><div class="k">Seen</div></div>
+      <div class="stat"><div class="v">${S.likes.length}</div><div class="k">Bookmarks</div></div>
     </div>
 
-    <div class="field"><span class="lab">Deine Bestenliste</span>
-      <div class="note">Platz 1 ist dein All-Time-Favorit und zählt am stärksten für deinen Taste. Cast den Pfeilen verschieben.</div>
-      <input class="inp" id="favSearch" placeholder="Film suchen und hinzufügen">
+    <div class="field"><span class="lab">Your ranking</span>
+      <div class="note">Number one is your all-time favorite and carries the most weight. Reorder films with the arrows.</div>
+      <input class="inp" id="favSearch" placeholder="Search and add a film">
       <div id="favHits" class="mlist"></div>
       <div id="favList" class="mlist">${favListHTML()}</div>
     </div>
 
     <div class="divider"></div>
-    <div class="field"><span class="lab">Was ich über dich gelernt habe</span>
-      ${S.swipes<6?`<p class="note">Noch zu früh — wisch ein paar Filme, dann steht hier deine Tastes-DNA.</p>`:""}
-      ${dnaGroup("Director",'d',6)}
+    <div class="field"><span class="lab">What I've learned about you</span>
+      ${S.swipes<6?`<p class="note">Too early — swipe a few films and your taste DNA will appear here.</p>`:""}
+      ${dnaGroup("Directors",'d',6)}
       ${dnaGroup("Cast",'a',6)}
       ${dnaGroup("Cinematography",'dp',3)}
       ${dnaGroup("Vibes",'v',10)}
-      ${dnaGroup("Themen",'k',8)}
-      ${dnaGroup("Länder",'c',5)}
+      ${dnaGroup("Themes",'k',8)}
+      ${dnaGroup("Countries",'c',5)}
       ${dnaGroup("Genres",'g',6)}
-      ${dnaGroup("Yeshrzehnte",'dec',4)}
-      ${dnaGroup("Strömungen",'mv',3)}
+      ${dnaGroup("Decades",'dec',4)}
+      ${dnaGroup("Movements",'mv',3)}
     </div>
 
     <div class="divider"></div>
     <div class="field"><span class="lab">Letterboxd</span>${letterboxdBlock()}</div>
 
     <div class="divider"></div>
-    <div class="field"><span class="lab">Abend zu zweit</span>
-      <div class="note">Dein eigenes Profile bleibt unangetastet. Der Abend-Modus sucht Filme, die zu euch beiden passen.</div>
-      <button class="btn ghost wide" id="pCouple">${S.partner?"Abend-Modus öffnen":"Zweites Profile anlegen"}</button>
+    <div class="field"><span class="lab">Movie night for two</span>
+      <div class="note">Your profile stays untouched. Movie Night finds films that fit both of you.</div>
+      <button class="btn ghost wide" id="pCouple">${S.partner?"Open Movie Night":"Create a second profile"}</button>
     </div>
 
     <div class="divider"></div>
     <div class="two">
       <button class="btn ghost" id="pTheme">Light / Dark</button>
-      <button class="btn ghost" id="pWipe">Alles zurücksetzen</button>
+      <button class="btn ghost" id="pWipe">Reset everything</button>
     </div>
-    <p class="note">Gespeichert wird ${DB?"in deinem Konto — auf jedem Gerät gleich":"in diesem Browser"}.</p>`;
+    <p class="note">Saved ${DB?"to your account — synced across devices":"in this browser"}.</p>`;
   openPanel("Profile", html, root=>{
     root.querySelector("#pName").addEventListener("change", e=>{ S.name=e.target.value.trim(); persist(); });
     root.addEventListener("click", e=>{
       const mu = e.target.closest("[data-mute]");
-      if(mu){ S.muted[mu.dataset.mute]=1; persist(); mu.closest(".dnaBar").style.opacity=".3"; mu.disabled=true; toast("Merkmal abgeschaltet."); return; }
+      if(mu){ S.muted[mu.dataset.mute]=1; persist(); mu.closest(".dnaBar").style.opacity=".3"; mu.disabled=true; toast("Preference muted."); return; }
       const up = e.target.closest("[data-up]");
       if(up){ const i=+up.dataset.up; if(i>0){ const a=S.favs; [a[i-1],a[i]]=[a[i],a[i-1]]; persist(); root.querySelector("#favList").innerHTML=favListHTML(); } return; }
       const dn = e.target.closest("[data-down]");
@@ -1393,14 +1410,14 @@ function openProfilee(){
       try{ localStorage.setItem("movinite.theme", next); }catch(e){}
     };
     root.querySelector("#pWipe").onclick = ()=>{
-      if(!confirm("Wirklich alles löschen — Tastesprofil, Listen und Favoriten?")) return;
+      if(!confirm("Delete your taste profile, lists and bookmarks?")) return;
       S = blankState(); persist(); closePanel(); renderOnboarding(1);
     };
     root.querySelector("#pCouple").onclick = openCouple;
   });
 }
 function favListHTML(){
-  if(!S.favs.length) return `<p class="note">Noch leer. Such oben deine Lieblingsfilme und bau dir deine Bestenliste.</p>`;
+  if(!S.favs.length) return `<p class="note">Nothing here yet. Search for your favorite films above and build your ranking.</p>`;
   return S.favs.map((tt,i)=>{
     const m = BYID.get(tt); if(!m) return "";
     const ps = posterStyle(m);
@@ -1408,9 +1425,9 @@ function favListHTML(){
       <span class="rank ${i===0?"top":""}">${i+1}</span>
       <span class="mthumb" style="${ps?ps:"background:"+gradOf(m)}">${ps?"":`<span class="ini">${esc(m[F.ti][0])}</span>`}</span>
       <span class="mmeta"><span class="t">${esc(m[F.ti])}</span><span class="s">${m[F.y]} · ${esc(m[F.d].map(nm)[0]||"")}</span></span>
-      <button class="iconbtn" data-up="${i}" style="width:28px;height:28px" aria-label="Höher"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
-      <button class="iconbtn" data-down="${i}" style="width:28px;height:28px" aria-label="Tiefer"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg></button>
-      <button class="iconbtn" data-rmfav="${tt}" style="width:28px;height:28px" aria-label="Entfernen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <button class="iconbtn" data-up="${i}" style="width:28px;height:28px" aria-label="Move up"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+      <button class="iconbtn" data-down="${i}" style="width:28px;height:28px" aria-label="Move down"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg></button>
+      <button class="iconbtn" data-rmfav="${tt}" style="width:28px;height:28px" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>`;
   }).join("");
 }
@@ -1418,22 +1435,22 @@ function favListHTML(){
 /* ======================= Abend-Modus ======================= */
 function openCouple(){
   const p = S.partner;
-  openPanel("Abend zu zweit", `
+  openPanel("Movie Night", `
     <div class="field">
-      <label class="lab" for="cName">Wer schaut mit?</label>
+      <label class="lab" for="cName">Who's watching with you?</label>
       <input class="inp" id="cName" value="${esc(p?p.name:"")}" placeholder="Name">
     </div>
-    <div class="field"><span class="lab">Ihre Lieblingsfilme</span>
-      <div class="note">Such fünf bis zehn Filme, die sie liebt. Daraus baue ich ihr Profile — und der Stapel zeigt dann nur noch, was zu euch beiden passt.</div>
-      <input class="inp" id="cSearch" placeholder="Film suchen">
+    <div class="field"><span class="lab">Their favorite films</span>
+      <div class="note">Search for five to ten films they love. I'll build a second profile and show only films that fit both of you.</div>
+      <input class="inp" id="cSearch" placeholder="Search for a film">
       <div id="cHits" class="mlist"></div>
       <div id="cList" class="mlist">${coupleListHTML()}</div>
     </div>
-    ${p&&p.favs&&p.favs.length?`<div class="field"><span class="lab">Gemeinsamer Stapel</span>
+    ${p&&p.favs&&p.favs.length?`<div class="field"><span class="lab">Shared stack</span>
       <div class="row">
-        <button class="toggle ${S.coupleOn?"on":""}" id="cOn">Abend-Modus an</button>
+        <button class="toggle ${S.coupleOn?"on":""}" id="cOn">Movie Night on</button>
       </div>
-      <div class="note">Ein Film kommt nur durch, wenn er zu euch beiden passt. Was einer von euch schon gesehen hat, fliegt raus.</div></div>`:""}
+      <div class="note">A film only gets through when it fits both of you. Films either of you has already seen are removed.</div></div>`:""}
   `, root=>{
     root.querySelector("#cName").addEventListener("change", e=>{
       S.partner = S.partner || {name:"", favs:[], w:{}, n:{}};
@@ -1461,20 +1478,20 @@ function openCouple(){
       if(r){ S.partner.favs=S.partner.favs.filter(x=>x!==+r.dataset.crm); persist(); root.querySelector("#cList").innerHTML=coupleListHTML(); }
       const on=e.target.closest("#cOn");
       if(on){ S.coupleOn=!S.coupleOn; on.classList.toggle("on",S.coupleOn); persist(); refillQueue(); paint();
-              toast(S.coupleOn?"Abend-Modus an — nur noch gemeinsame Treffer.":"Abend-Modus aus."); }
+              toast(S.coupleOn?"Movie Night on — showing shared matches only.":"Movie Night off."); }
     });
   });
 }
 function coupleListHTML(){
   const p=S.partner;
-  if(!p||!p.favs.length) return `<p class="note">Noch keine Filme.</p>`;
+  if(!p||!p.favs.length) return `<p class="note">No films yet.</p>`;
   return p.favs.map(tt=>{
     const m=BYID.get(tt); if(!m) return "";
     const ps=posterStyle(m);
     return `<div class="mitem" style="cursor:default">
       <span class="mthumb" style="${ps?ps:"background:"+gradOf(m)}">${ps?"":`<span class="ini">${esc(m[F.ti][0])}</span>`}</span>
       <span class="mmeta"><span class="t">${esc(m[F.ti])}</span><span class="s">${m[F.y]}</span></span>
-      <button class="iconbtn" data-crm="${tt}" style="width:28px;height:28px" aria-label="Entfernen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <button class="iconbtn" data-crm="${tt}" style="width:28px;height:28px" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>`;
   }).join("");
 }
@@ -1493,7 +1510,7 @@ try{ const th=localStorage.getItem("movinite.theme"); if(th) document.documentEl
     else renderDeck();
   }catch(err){
     main.className="loadWrap";
-    main.innerHTML = `<div><h3 class="serif" style="font-size:20px;margin:0 0 8px">Die Daten kamen nicht durch</h3>
+    main.innerHTML = `<div><h3 class="serif" style="font-size:20px;margin:0 0 8px">The movie data could not be loaded</h3>
       <p class="note">${esc(err.message||err)}</p></div>`;
   }
 })();

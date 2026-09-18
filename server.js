@@ -22,6 +22,7 @@ const TYPES = {
   ".svg": "image/svg+xml",
   ".css": "text/css; charset=utf-8",
   ".ico": "image/x-icon",
+  ".otf": "font/otf",
 };
 
 // index.html einmal einlesen (klein, ändert sich nicht zur Laufzeit)
@@ -149,7 +150,7 @@ const server = http.createServer((req, res) => {
 
   if (url === "/health") return send(res, 200, "ok");
 
-  if (url.startsWith("/data/") || url.startsWith("/sheets/")) {
+  if (url.startsWith("/data/") || url.startsWith("/sheets/") || url.startsWith("/brand/") || url.startsWith("/fonts/")) {
     return serveStatic(req, res, url);
   }
 
