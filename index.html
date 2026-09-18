@@ -13,23 +13,23 @@
 img{max-width:100%}
 /* ---------------- tokens: dark-first ---------------- */
 :root{
-  --bg:#0A090E; --bg2:#100E16; --surf:#17141F; --surf2:#211D2C; --surf3:#2C2739;
-  --line:#2A2536; --line2:#3A3448;
-  --ink:#F4F1EC; --ink2:#BEB6CB; --ink3:#867D97;
-  --ember:#F2622E; --ember2:#FF8A5B;
-  --yes:#3ED9A0; --no:#FF5C7A; --seen:#7FA6FF; --gold:#E8C169;
+  --bg:#050505; --bg2:#0B0B0B; --surf:#141414; --surf2:#1F1F1F; --surf3:#2A2A2A;
+  --line:#2E2E2E; --line2:#474747;
+  --ink:#F7F7F7; --ink2:#C2C2C2; --ink3:#8C8C8C;
+  --ember:#E32929; --ember2:#FF4A4A;
+  --yes:#F5F5F5; --no:#9B9B9B; --seen:#C9C9C9; --gold:#F0F0F0;
   --shadow:0 24px 60px -18px rgba(0,0,0,.85);
   --r:18px;
   color-scheme:dark;
 }
 /* Standard ist immer dunkel — hell nur nach ausdrücklicher Wahl im Profile, nicht automatisch nach Systemeinstellung. */
 :root[data-theme="light"]{
-  --bg:#F7F5F1; --bg2:#EFEBE4; --surf:#FFFFFF; --surf2:#F2EEE8; --surf3:#E7E1D8;
-  --line:#E0D9CE; --line2:#CFC6B8;
-  --ink:#171420; --ink2:#4B4457; --ink3:#7C7389;
-  --ember:#D4491B; --ember2:#B33D14;
-  --yes:#128A62; --no:#C4324F; --seen:#3A63C7; --gold:#9A7418;
-  --shadow:0 20px 44px -20px rgba(30,24,40,.35);
+  --bg:#FFFFFF; --bg2:#F4F4F4; --surf:#FFFFFF; --surf2:#F0F0F0; --surf3:#E5E5E5;
+  --line:#DDDDDD; --line2:#BDBDBD;
+  --ink:#0A0A0A; --ink2:#3D3D3D; --ink3:#717171;
+  --ember:#D71920; --ember2:#B51218;
+  --yes:#111111; --no:#666666; --seen:#333333; --gold:#111111;
+  --shadow:0 20px 44px -20px rgba(0,0,0,.28);
   color-scheme:light;
 }
 *{box-sizing:border-box}
@@ -197,7 +197,7 @@ h2.ftitle{
 input[type=range]{width:100%;accent-color:var(--ember);background:transparent}
 .rangeVal{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:13px;color:var(--ember2)}
 .btn{
-  padding:12px 18px;border-radius:13px;background:var(--ember);color:#fff;font-weight:600;font-size:14.5px;
+  padding:12px 18px;border-radius:13px;background:var(--ink);color:var(--bg);font-weight:600;font-size:14.5px;
   display:flex;align-items:center;justify-content:center;gap:8px;transition:filter .15s;
 }
 .btn:hover{filter:brightness(1.08)}
