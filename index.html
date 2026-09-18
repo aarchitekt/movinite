@@ -1,0 +1,1502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Movinite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,700&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+img{max-width:100%}
+/* ---------------- tokens: dark-first ---------------- */
+:root{
+  --bg:#0A090E; --bg2:#100E16; --surf:#17141F; --surf2:#211D2C; --surf3:#2C2739;
+  --line:#2A2536; --line2:#3A3448;
+  --ink:#F4F1EC; --ink2:#BEB6CB; --ink3:#867D97;
+  --ember:#F2622E; --ember2:#FF8A5B;
+  --yes:#3ED9A0; --no:#FF5C7A; --seen:#7FA6FF; --gold:#E8C169;
+  --shadow:0 24px 60px -18px rgba(0,0,0,.85);
+  --r:18px;
+  color-scheme:dark;
+}
+/* Standard ist immer dunkel — hell nur nach ausdrücklicher Wahl im Profile, nicht automatisch nach Systemeinstellung. */
+:root[data-theme="light"]{
+  --bg:#F7F5F1; --bg2:#EFEBE4; --surf:#FFFFFF; --surf2:#F2EEE8; --surf3:#E7E1D8;
+  --line:#E0D9CE; --line2:#CFC6B8;
+  --ink:#171420; --ink2:#4B4457; --ink3:#7C7389;
+  --ember:#D4491B; --ember2:#B33D14;
+  --yes:#128A62; --no:#C4324F; --seen:#3A63C7; --gold:#9A7418;
+  --shadow:0 20px 44px -20px rgba(30,24,40,.35);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  overscroll-behavior:none;
+}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ember);outline-offset:2px;border-radius:6px}
+.mono{font-family:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+.serif{font-family:"Bodoni Moda","Didot","Times New Roman",serif}
+
+#app{display:flex;flex-direction:column;height:100%;max-width:560px;margin:0 auto;position:relative}
+
+/* ---------------- top bar ---------------- */
+.top{
+  display:flex;align-items:center;gap:8px;padding:10px 16px;
+  padding-top:calc(10px + env(safe-area-inset-top,0px));
+  border-bottom:1px solid var(--line);background:var(--bg);
+  position:sticky;top:0;z-index:30;flex:0 0 auto;
+}
+.brand{font-family:"Bodoni Moda",serif;font-size:20px;letter-spacing:.01em;font-weight:500;margin-right:auto}
+.brand em{color:var(--ember);font-style:normal}
+.iconbtn{
+  width:36px;height:36px;border-radius:11px;display:grid;place-items:center;
+  border:1px solid var(--line);background:var(--surf);color:var(--ink2);flex:0 0 auto;
+  transition:border-color .15s,color .15s;
+}
+.iconbtn:hover{border-color:var(--line2);color:var(--ink)}
+.iconbtn.on{border-color:var(--ember);color:var(--ember)}
+.iconbtn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.badge{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;border-radius:9px;background:var(--ember);color:#fff;font-size:10px;font-weight:600;display:grid;place-items:center;padding:0 4px}
+.iconwrap{position:relative}
+
+/* ---------------- deck ---------------- */
+.stage{flex:1 1 auto;position:relative;overflow:hidden}
+.card{
+  position:absolute;inset:14px 16px 0;border-radius:var(--r);overflow:hidden;
+  background:var(--surf);border:1px solid var(--line);box-shadow:var(--shadow);
+  display:flex;flex-direction:column;will-change:transform;touch-action:pan-y;
+}
+.card.behind{transform:scale(.955) translateY(12px);opacity:.55;pointer-events:none;filter:saturate(.7)}
+.card.behind2{transform:scale(.915) translateY(23px);opacity:.28;pointer-events:none;filter:saturate(.5)}
+.hero{position:relative;flex:0 0 auto;aspect-ratio:2/3;overflow:hidden;background:#000}
+.hero .poster{position:absolute;inset:0;background-repeat:no-repeat;background-size:1000% 1000%;background-attachment:fixed;transform:scale(1.02)}
+.hero .gen{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center}
+.hero .gen span{font-family:"Bodoni Moda",serif;font-size:clamp(22px,6vw,34px);line-height:1.1;color:#fff;text-shadow:0 2px 24px rgba(0,0,0,.6);text-wrap:balance}
+.hero .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,9,14,0) 38%,rgba(10,9,14,.55) 70%,var(--surf) 100%)}
+.hero .grain{position:absolute;inset:0;opacity:.14;mix-blend-mode:overlay;pointer-events:none;
+  background-image:radial-gradient(circle at 1px 1px, #fff 1px, transparent 0);background-size:3px 3px}
+.hero .rt{
+  position:absolute;left:14px;bottom:12px;z-index:2;display:flex;align-items:baseline;gap:7px;
+  font-family:"Geist Mono",monospace;font-size:13px;color:#fff;letter-spacing:.02em;
+  background:rgba(10,9,14,.55);backdrop-filter:blur(8px);padding:5px 10px;border-radius:9px;
+  border:1px solid rgba(255,255,255,.14);
+}
+.hero .rt b{font-weight:500;font-size:15px}
+.hero .score{
+  position:absolute;right:14px;bottom:12px;z-index:2;display:flex;align-items:center;gap:6px;
+  background:rgba(10,9,14,.55);backdrop-filter:blur(8px);padding:5px 10px;border-radius:9px;
+  border:1px solid rgba(255,255,255,.14);font-family:"Geist Mono",monospace;font-size:13px;color:#fff;
+}
+.hero .score i{color:var(--gold);font-style:normal}
+.hero .bookmark{
+  position:absolute;right:14px;top:14px;z-index:3;width:38px;height:38px;border-radius:11px;
+  display:grid;place-items:center;background:rgba(10,9,14,.55);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.16);color:#fff;transition:transform .12s,background .15s,border-color .15s;
+}
+.hero .bookmark:active{transform:scale(.88)}
+.hero .bookmark svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;transition:fill .15s}
+.hero .bookmark.on{background:color-mix(in srgb,var(--ember) 30%,rgba(10,9,14,.55));border-color:var(--ember)}
+.hero .bookmark.on svg{fill:var(--ember);stroke:var(--ember)}
+
+.body{flex:1 1 auto;overflow-y:auto;padding:14px 16px 18px;display:flex;flex-direction:column;gap:11px;-webkit-overflow-scrolling:touch}
+.titleRow{display:flex;align-items:flex-start;gap:10px}
+h2.ftitle{
+  font-family:"Bodoni Moda",serif;font-weight:500;font-size:clamp(21px,5.4vw,27px);
+  line-height:1.12;margin:0;letter-spacing:-.01em;text-wrap:balance;flex:1;
+}
+.orig{font-size:12.5px;color:var(--ink3);margin-top:3px;font-style:italic}
+.facts{display:flex;flex-wrap:wrap;gap:6px 10px;font-size:12.5px;color:var(--ink2);align-items:center}
+.facts .dot{width:3px;height:3px;border-radius:2px;background:var(--line2);flex:0 0 auto}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:11.5px;padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--ink2);background:var(--surf2);white-space:nowrap}
+.chip.vibe{border-color:transparent;background:color-mix(in srgb,var(--ember) 13%,transparent);color:var(--ember2)}
+.chip.prov{border-color:color-mix(in srgb,var(--seen) 35%,transparent);color:var(--seen);background:transparent}
+.synopsis{font-size:14px;line-height:1.58;color:var(--ink2);margin:0}
+.crew{font-size:12.5px;color:var(--ink3);line-height:1.6}
+.crew b{color:var(--ink2);font-weight:500}
+.why{
+  display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.5;
+  border-left:2px solid var(--ember);padding:2px 0 2px 10px;color:var(--ink2);
+}
+.why svg{width:14px;height:14px;flex:0 0 auto;margin-top:2px;stroke:var(--ember);fill:none;stroke-width:1.8}
+
+.stamp{
+  position:absolute;top:26px;z-index:5;font-family:"Geist Mono",monospace;font-size:15px;letter-spacing:.14em;
+  padding:8px 14px;border:2.5px solid;border-radius:10px;opacity:0;transform:rotate(-8deg) scale(.85);
+  transition:opacity .12s,transform .12s;text-transform:uppercase;font-weight:500;backdrop-filter:blur(4px);
+}
+.stamp.y{left:22px;color:var(--yes);border-color:var(--yes);background:color-mix(in srgb,var(--yes) 12%,transparent)}
+.stamp.n{right:22px;color:var(--no);border-color:var(--no);background:color-mix(in srgb,var(--no) 12%,transparent);transform:rotate(8deg) scale(.85)}
+.stamp.s{left:50%;top:14px;margin-left:-70px;color:var(--seen);border-color:var(--seen);background:color-mix(in srgb,var(--seen) 12%,transparent);transform:rotate(0) scale(.85)}
+
+/* ---------------- actions ---------------- */
+.actions{
+  flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:14px;
+  padding:14px 16px;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));
+}
+.act{
+  width:58px;height:58px;border-radius:50%;display:grid;place-items:center;
+  border:1.5px solid var(--line);background:var(--surf);transition:transform .12s,border-color .15s,background .15s;
+}
+.act:active{transform:scale(.9)}
+.act svg{width:24px;height:24px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.act.no{border-color:color-mix(in srgb,var(--no) 45%,var(--line))}
+.act.no svg{stroke:var(--no)}
+.act.yes{width:68px;height:68px;border-color:color-mix(in srgb,var(--yes) 50%,var(--line))}
+.act.yes svg{stroke:var(--yes);width:28px;height:28px}
+.act.seen{border-color:color-mix(in srgb,var(--seen) 45%,var(--line))}
+.act.seen svg{stroke:var(--seen)}
+.act.small{width:44px;height:44px}
+.act.small svg{width:18px;height:18px;stroke:var(--ink3)}
+.act:disabled{opacity:.3;cursor:default}
+
+/* ---------------- sheets / panels ---------------- */
+.scrim{position:fixed;inset:0;background:rgba(6,5,10,.66);backdrop-filter:blur(3px);z-index:40;opacity:0;transition:opacity .2s}
+.scrim.open{opacity:1}
+.panel{
+  position:fixed;left:50%;transform:translateX(-50%) translateY(100%);bottom:0;width:100%;max-width:560px;
+  background:var(--bg2);border-top-left-radius:22px;border-top-right-radius:22px;border:1px solid var(--line);
+  border-bottom:none;z-index:41;max-height:90%;display:flex;flex-direction:column;
+  transition:transform .26s cubic-bezier(.22,1,.36,1);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.panel.open{transform:translateX(-50%) translateY(0)}
+.panelHead{display:flex;align-items:center;gap:10px;padding:16px 18px 10px;flex:0 0 auto}
+.panelHead h3{margin:0;font-family:"Bodoni Moda",serif;font-weight:500;font-size:20px;flex:1}
+.panelBody{overflow-y:auto;padding:4px 18px 22px;display:flex;flex-direction:column;gap:18px}
+.grip{width:38px;height:4px;border-radius:3px;background:var(--line2);margin:8px auto 0}
+
+.field{display:flex;flex-direction:column;gap:8px}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);font-weight:500}
+.inp{
+  width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--line);
+  background:var(--surf);color:var(--ink);font-size:14.5px;
+}
+.inp::placeholder{color:var(--ink3)}
+.toggle{
+  padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surf);
+  font-size:13px;color:var(--ink2);transition:.15s;white-space:nowrap;
+}
+.toggle.on{background:color-mix(in srgb,var(--ember) 16%,var(--surf));border-color:var(--ember);color:var(--ember2)}
+.row{display:flex;flex-wrap:wrap;gap:7px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+input[type=range]{width:100%;accent-color:var(--ember);background:transparent}
+.rangeVal{font-family:"Geist Mono",monospace;font-size:13px;color:var(--ember2)}
+.btn{
+  padding:12px 18px;border-radius:13px;background:var(--ember);color:#fff;font-weight:600;font-size:14.5px;
+  display:flex;align-items:center;justify-content:center;gap:8px;transition:filter .15s;
+}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:var(--surf);border:1px solid var(--line);color:var(--ink2);font-weight:500}
+.btn.wide{width:100%}
+
+/* ---------------- lists ---------------- */
+.mlist{display:flex;flex-direction:column;gap:2px}
+.mitem{display:flex;gap:11px;align-items:center;padding:8px;border-radius:12px;transition:background .15s;text-align:left;width:100%}
+.mitem:hover{background:var(--surf)}
+.mthumb{width:40px;height:60px;border-radius:6px;flex:0 0 auto;background-size:1000% 1000%;background-repeat:no-repeat;background-color:var(--surf3);overflow:hidden;position:relative}
+.mthumb .ini{position:absolute;inset:0;display:grid;place-items:center;font-family:"Bodoni Moda",serif;font-size:17px;color:rgba(255,255,255,.85)}
+.mmeta{flex:1;min-width:0}
+.mmeta .t{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mmeta .s{font-size:12px;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank{font-family:"Geist Mono",monospace;font-size:13px;color:var(--ink3);width:22px;text-align:right;flex:0 0 auto}
+.rank.top{color:var(--gold);font-weight:500}
+
+/* ---------------- dna ---------------- */
+.dnaGroup{display:flex;flex-direction:column;gap:9px}
+.dnaHead{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);font-weight:500}
+.dnaBar{display:flex;align-items:center;gap:9px}
+.dnaBar .nm{font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dnaBar .tr{width:84px;height:5px;border-radius:3px;background:var(--surf3);position:relative;flex:0 0 auto;overflow:hidden}
+.dnaBar .tr i{position:absolute;top:0;bottom:0;left:50%;border-radius:3px}
+.dnaBar button{width:22px;height:22px;border-radius:7px;color:var(--ink3);font-size:15px;line-height:1;flex:0 0 auto}
+.dnaBar button:hover{color:var(--no);background:var(--surf2)}
+
+/* ---------------- onboarding ---------------- */
+.ob{flex:1;overflow-y:auto;padding:26px 18px 30px;display:flex;flex-direction:column;gap:20px}
+.obTitle{font-family:"Bodoni Moda",serif;font-size:clamp(28px,8vw,40px);line-height:1.08;margin:0;text-wrap:balance;font-weight:500}
+.obTitle em{color:var(--ember);font-style:normal}
+.obSub{color:var(--ink2);font-size:14.5px;line-height:1.6;margin:0;max-width:46ch}
+.seedGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:9px}
+.seed{position:relative;aspect-ratio:185/278;border-radius:10px;overflow:hidden;background-size:1000% 1000%;background-repeat:no-repeat;background-color:var(--surf3);transition:transform .14s;border:2px solid transparent}
+.seed .ini{position:absolute;inset:0;display:grid;place-items:center;padding:6px;text-align:center;font-family:"Bodoni Moda",serif;font-size:12px;line-height:1.15;color:rgba(255,255,255,.9)}
+.seed.on{border-color:var(--ember);transform:scale(.94)}
+.seed.on::after{content:"";position:absolute;inset:0;background:color-mix(in srgb,var(--ember) 26%,transparent)}
+.seed .mark{position:absolute;right:5px;top:5px;width:19px;height:19px;border-radius:50%;background:var(--ember);display:none;place-items:center;z-index:2}
+.seed.on .mark{display:grid}
+.seed .mark svg{width:11px;height:11px;stroke:#fff;stroke-width:3;fill:none}
+.stepbar{display:flex;gap:5px}
+.stepbar i{height:3px;border-radius:2px;background:var(--surf3);flex:1}
+.stepbar i.on{background:var(--ember)}
+
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;height:100%;padding:30px;color:var(--ink3)}
+.empty h3{font-family:"Bodoni Moda",serif;font-size:22px;color:var(--ink);margin:0;font-weight:500}
+.note{font-size:12.5px;color:var(--ink3);line-height:1.55}
+.note a{color:var(--ember2)}
+.divider{height:1px;background:var(--line)}
+.statRow{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.stat{background:var(--surf);border:1px solid var(--line);border-radius:13px;padding:11px 12px}
+.stat .v{font-family:"Geist Mono",monospace;font-size:19px;font-weight:500}
+.stat .k{font-size:11px;color:var(--ink3);margin-top:1px}
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));
+  background:var(--surf3);border:1px solid var(--line2);color:var(--ink);padding:10px 16px;border-radius:13px;
+  font-size:13.5px;z-index:60;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;box-shadow:var(--shadow);
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(-6px)}
+.seenAsk{
+  position:absolute;left:16px;right:16px;bottom:16px;z-index:8;display:flex;gap:8px;
+  background:var(--surf2);border:1px solid var(--line2);border-radius:15px;padding:9px;box-shadow:var(--shadow);
+}
+.seenAsk button{flex:1;padding:9px;border-radius:10px;background:var(--surf);border:1px solid var(--line);font-size:13px}
+.loadWrap{flex:1;display:grid;place-items:center;padding:30px;text-align:center}
+.spin{width:30px;height:30px;border-radius:50%;border:2.5px solid var(--line2);border-top-color:var(--ember);animation:sp .8s linear infinite;margin:0 auto 14px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top">
+    <div class="brand">Film<em>abend</em></div>
+    <button class="iconbtn" id="bFilters" title="Mood &amp; Filters" aria-label="Mood und Filters">
+      <svg viewBox="0 0 24 24"><path d="M3 5h18M6 12h12M10 19h4"/></svg></button>
+    <span class="iconwrap"><button class="iconbtn" id="bList" title="Bookmarks" aria-label="Bookmarks">
+      <svg viewBox="0 0 24 24"><path d="M6 4h12v16l-6-4-6 4z"/></svg></button><span class="badge" id="wlBadge" hidden>0</span></span>
+    <button class="iconbtn" id="bProfilee" title="Profile" aria-label="Profile">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c.7-4 3.8-6 7.5-6s6.8 2 7.5 6"/></svg></button>
+  </div>
+  <div id="main" class="loadWrap"><div><div class="spin"></div><div class="note">Filmdatenbank wird geladen …</div></div></div>
+</div>
+<div class="scrim" id="scrim" hidden></div>
+<div class="panel" id="panel" hidden>
+  <div class="grip"></div>
+  <div class="panelHead"><h3 id="panelTitle"></h3>
+    <button class="iconbtn" id="panelClose" aria-label="Schließen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="panelBody" id="panelBody"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* =======================================================================
+   Movinite — Tastes-Engine
+   Daten: IMDb · TMDB · MovieLens Tag-Genome · Wikidata
+   ======================================================================= */
+
+const F = {tt:0,ti:1,ot:2,y:3,rt:4,ir:5,iv:6,tr:7,g:8,c:9,l:10,d:11,a:12,w:13,
+           dp:14,mu:15,k:16,v:17,f:18,co:19,cl:20,pv:21,ce:22,mv:23,aw:24,bw:25,
+           s:26,tl:27,pop:28,sh:29,sl:30,col:31};
+
+let META=null, MOVIES=[], BYID=new Map();
+let S = null;   // state
+
+/* ---------- Vibe-Übersetzung (häufigste Genome-Tags) ---------- */
+const VIBE_DE = {
+"atmospheric":"atmosphärisch","visually appealing":"visuell stark","melancholy":"melancholisch",
+"thought-provoking":"zum Nachdenken","dark":"düster","surreal":"surreal","quirky":"eigenwillig",
+"stylized":"stilisiert","dystopia":"Dystopie","cerebral":"kopflastig","psychological":"psychologisch",
+"mindfuck":"Kopfkino","twist ending":"Wendung am Ende","great ending":"starkes Ende",
+"beautifully filmed":"wunderschön gefilmt","cinematography":"Cinematographyarbeit","slow":"langsam",
+"quiet":"leise","touching":"berührend","heartwarming":"herzerwärmend","bittersweet":"bittersüß",
+"emotional":"emotional","sad":"traurig","depressing":"schwer","feel good movie":"Wohlfühlfilm",
+"funny":"witzig","hilarious":"zum Brüllen","satire":"Satire","dark comedy":"schwarzer Humor",
+"witty":"schlagfertig","absurd":"absurd","violence":"brutal","gore":"blutig","disturbing":"verstörend",
+"creepy":"gruselig","suspense":"Tension","tense":"angespannt","paranoia":"Paranoia",
+"mystery":"rätselhaft","noir":"Noir","neo-noir":"Neo-Noir","stylish":"stilsicher","cool":"cool",
+"action":"Action","adventure":"Abenteuer","road trip":"Roadtrip","coming of age":"Erwachsenwerden",
+"friendship":"Freundschaft","family":"Familie","father son relationship":"Vater & Sohn",
+"mother daughter relationship":"Mutter & Tochter","love story":"Liebesgeschichte","romance":"Romantik",
+"relationships":"Beziehungen","divorce":"Trennung","loneliness":"Einsamkeit","alienation":"Entfremdung",
+"existentialism":"existenziell","philosophy":"Philosophie","religion":"Religion","death":"Tod",
+"grief":"Trauer","memory":"Erinnerung","dreamlike":"traumartig","nonlinear":"nicht linear",
+"nonlinear timeline":"verschachtelt","storytelling":"Erzählkunst","dialogue driven":"dialoglastig",
+"good dialogue":"starke Dialoge","character study":"Charakterstudie","ensemble cast":"Ensemble",
+"great acting":"stark gespielt","oscar (best picture)":"Oscar bester Film","criterion":"Criterion",
+"cult film":"Kultfilm","classic":"Klassiker","masterpiece":"Meisterwerk","underrated":"unterschätzt",
+"weird":"seltsam","bizarre":"bizarr","psychedelic":"psychedelisch","trippy":"trippy",
+"black and white":"schwarzweiß","period piece":"Zeitstück","historical":"historisch","war":"Krieg",
+"world war ii":"Zweiter Countrieskrieg","holocaust":"Holocaust","politics":"politisch","social commentary":"Gesellschaftskritik",
+"documentary":"dokumentarisch","based on a true story":"nach wahren Begebenheiten","biography":"Biografie",
+"sci-fi":"Science-Fiction","space":"Countriesraum","time travel":"Zeitreise","future":"Zukunft",
+"artificial intelligence":"künstliche Intelligenz","aliens":"Außerirdische","robots":"Roboter",
+"post-apocalyptic":"postapokalyptisch","fantasy":"Fantasy","magic":"Magie","fairy tale":"Märchen",
+"animation":"Animation","anime":"Anime","musical":"Musical","music":"Music","great soundtrack":"starker Soundtrack",
+"horror":"Horror","zombies":"Zombies","vampires":"Vampire","ghosts":"Geister","supernatural":"übernatürlich",
+"serial killer":"Serienmörder","crime":"Kriminalfilm","heist":"Raub","mafia":"Mafia","gangsters":"Gangster",
+"prison":"Gefängnis","revenge":"Rache","western":"Western","samurai":"Samurai","martial arts":"Kampfkunst",
+"sports":"Sport","boxing":"Boxen","courtroom":"Gerichtssaal","journalism":"Journalismus",
+"small town":"Kleinstadt","new york city":"New York","paris":"Paris","tokyo":"Tokio","london":"London",
+"desert":"Wüste","ocean":"Meer","snow":"Schnee","winter":"Winter","summer":"Sommer","rain":"Regen",
+"nature":"Natur","survival":"Überleben","isolation":"Isolation","claustrophobic":"klaustrophobisch",
+"one location":"ein Schauplatz","long take":"lange Settings","minimalist":"minimalistisch",
+"subtitles":"Untertitel","foreign":"fremdsprachig","french":"französisch","japanese":"japanisch",
+"italian":"italienisch","korean":"koreanisch","scandinavian":"skandinavisch","russian":"russisch",
+"drugs":"Drogen","alcoholism":"Alkohol","mental illness":"psychische Krankheit","sexuality":"Sexualität",
+"lgbt":"queer","feminism":"Feminismus","childhood":"Kindheit","teen":"Jugend","school":"Schule",
+"high school":"Highschool","college":"Uni","work":"Arbeit","money":"Geld","capitalism":"Kapitalismus",
+"nostalgia":"Nostalgie","80s":"80er","70s":"70er","90s":"90er","christmas":"Weihnachten",
+"good soundtrack":"guter Soundtrack","visually stunning":"visuell umwerfend","imdb top 250":"IMDb Top 250"
+};
+const vibeDE = t => VIBE_DE[t] || t;
+
+const LANG_DE = {en:"English",de:"German",fr:"French",it:"Italian",es:"Spanish",ja:"Spanish",
+ko:"Koreanisch",zh:"Chinesisch",cn:"Chinesisch",ru:"Russisch",sv:"Schwedisch",da:"Dänisch",no:"Norwegisch",
+fi:"Finnisch",nl:"Niederländisch",pl:"Polnisch",pt:"Portugiesisch",cs:"Tschechisch",hu:"Ungarisch",
+tr:"Türkisch",fa:"Persisch",ar:"Arabisch",hi:"Hindi",th:"Thai",he:"Hebräisch",el:"Griechisch",
+ro:"Rumänisch",sr:"Serbisch",is:"Isländisch",et:"Estnisch",uk:"Ukrainisch",vi:"Vietnamesisch",
+ta:"Tamil",bn:"Bengali",id:"Indonesisch",ca:"Katalanisch",no_:"Norwegisch"};
+const langDE = c => LANG_DE[c] || (c||"").toUpperCase();
+
+const CC_DE = {US:"USA",GB:"UK",DE:"Germany",FR:"France",IT:"Italy",ES:"Spain",JP:"Spain",
+KR:"Südkorea",CN:"China",HK:"Hongkong",TW:"Taiwan",RU:"Russland",SU:"UdSSR",SE:"Schweden",DK:"Dänemark",
+NO:"Norwegen",FI:"Finnland",IS:"Island",NL:"Niederlande",BE:"Belgien",AT:"Österreich",CH:"Schweiz",
+PL:"Polen",CZ:"Tschechien",HU:"Ungarn",RO:"Rumänien",GR:"Griechenland",TR:"Türkei",IR:"Iran",
+IN:"Indien",TH:"Thailand",BR:"Brasilien",AR:"Argentinien",MX:"Mexiko",CL:"Chile",CA:"Kanada",
+AU:"Australien",NZ:"Neuseeland",ZA:"Südafrika",IE:"Irland",PT:"Portugal",IL:"Israel",UA:"Ukraine",
+VN:"Vietnam",ID:"Indonesien",PH:"Philippinen",EG:"Ägypten",MA:"Marokko",SN:"Senegal",BF:"Burkina Faso"};
+const ccDE = c => CC_DE[c] || c;
+
+/* ---------- Moods: jede Mood ist ein Bündel gewichteter Vibe-Tags ---------- */
+const MOODS = [
+ {id:"cozy",  n:"Gemütlich",       t:{"heartwarming":1,"feel good movie":1,"funny":.6,"touching":.7,"friendship":.5,"nostalgia":.5},   neg:{"disturbing":1,"gore":1,"depressing":.8}},
+ {id:"heavy", n:"Etwas Schweres",  t:{"thought-provoking":1,"melancholy":.9,"emotional":.8,"character study":.8,"existentialism":.6},  neg:{"funny":.5}},
+ {id:"tense", n:"Nervenkitzel",    t:{"suspense":1,"tense":1,"psychological":.7,"mystery":.7,"paranoia":.6,"twist ending":.5}},
+ {id:"pretty",n:"Augenschmaus",    t:{"visually appealing":1,"beautifully filmed":1,"cinematography":.9,"stylized":.7,"dreamlike":.5}},
+ {id:"funny", n:"Zum Lachen",      t:{"funny":1,"hilarious":.9,"witty":.7,"dark comedy":.5,"absurd":.5}},
+ {id:"weird", n:"Seltsam & Anders",t:{"weird":1,"surreal":1,"bizarre":.8,"mindfuck":.7,"psychedelic":.6,"nonlinear":.5}},
+ {id:"loud",  n:"Laut & Fast",  t:{"action":1,"adventure":.7,"cool":.6,"stylish":.5}, neg:{"slow":1,"quiet":.7}},
+ {id:"quiet", n:"Leise & Slow", t:{"slow":1,"quiet":1,"minimalist":.8,"long take":.7,"atmospheric":.6}, neg:{"action":.8}},
+ {id:"scared",n:"Gänsehaut",       t:{"horror":1,"creepy":.9,"disturbing":.7,"supernatural":.5,"suspense":.5}},
+ {id:"love",  n:"Liebe",           t:{"romance":1,"love story":1,"relationships":.7,"bittersweet":.5}},
+ {id:"mind",  n:"Kopfkino",        t:{"cerebral":1,"thought-provoking":.9,"philosophy":.7,"sci-fi":.5,"mindfuck":.6}},
+ {id:"true",  n:"Echtes Leben",    t:{"based on a true story":1,"social commentary":.8,"documentary":.5,"politics":.5,"biography":.6}}
+];
+
+/* ---------- Feature-Gewichte pro Merkmalsart ---------- */
+const KW = {d:1.9, a:1.15, w:.8, dp:1.25, mu:1.0, g:.85, c:1.0, l:1.1, k:.8, v:1.0,
+            co:.65, mv:1.7, aw:.45, dec:.8, rt:.55, pop:.7, cl:1.2};
+
+/* ======================= Laden ======================= */
+async function loadPack(path){
+  // Der Server liefert diese Dateien bereits gzip-komprimiert (Content-Encoding: gzip);
+  // der Browser packt sie automatisch aus — kein Base64-Umweg nötig wie im Artifact.
+  const r = await fetch(path);
+  if(!r.ok) throw new Error(path+" "+r.status);
+  return r.json();
+}
+async function loadAll(){
+  META = await loadPack("/data/meta.json.gz");
+  const parts = await Promise.all(META.shards.map(s=>loadPack("/data/"+s)));
+  MOVIES = parts.flat();
+  MOVIES.forEach(m=>BYID.set(m[F.tt], m));
+}
+
+/* ======================= Poster ======================= */
+const SC=10, SR=10;
+function sheetUrl(sh){ return "/sheets/s"+String(sh).padStart(4,"0")+".webp"; }
+function posterStyle(m){
+  const sh = m[F.sh], sl = m[F.sl];
+  if(sh==null || sh>=META.sheets) return null;
+  const col = sl % SC, row = (sl/SC)|0;
+  return `background-image:url(${sheetUrl(sh)});background-size:${SC*100}% ${SR*100}%;`+
+         `background-position:${col/(SC-1)*100}% ${row/(SR-1)*100}%`;
+}
+function gradOf(m){
+  const c = m[F.col];
+  const hex = v => "#"+("000000"+(v>>>0).toString(16)).slice(-6);
+  if(!c || !c.length) return "linear-gradient(145deg,#2b2436,#151120)";
+  const a = hex(c[0]), b = hex(c[1]!=null?c[1]:c[0]), d = hex(c[2]!=null?c[2]:c[0]);
+  return `linear-gradient(145deg,${a} 0%,${b} 52%,${d} 100%)`;
+}
+
+/* ======================= Zustand & Speicher ======================= */
+function blankState(){
+  return {
+    v:2, name:"", born:0, created:Date.now(),
+    w:{}, n:{},                 // DNA: Summe / Beobachtungen je Merkmal
+    seen:{}, likes:[], nopes:{}, favs:[],
+    swipes:0, muted:{},         // muted: vom Nutzer deaktivierte Merkmale
+    filters:defaultFilterss(), partner:null, lbx:0
+  };
+}
+function defaultFilterss(){
+  return {moods:[], yFrom:1920, yTo:2026, rtMax:240, rtMin:0, langs:[], provs:[],
+          exG:[], niche:50, refs:[], words:"", onlyUnseen:true};
+}
+const LS = "movinite.v1";
+function saveLocal(){ try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){} }
+function loadLocal(){ try{ const r=localStorage.getItem(LS); return r?JSON.parse(r):null; }catch(e){ return null; } }
+
+let saveTimer=null;
+function persist(){
+  saveLocal();
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    fetch("/api/state", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(S)
+    }).catch(()=>{});
+  }, 900);
+}
+
+async function bootStore(){
+  let remote=null;
+  try{
+    const r = await fetch("/api/state");
+    if(r.ok){ remote = await r.json(); }
+  }catch(e){}
+  const local = loadLocal();
+  if(remote && remote.v){ S = remote; if(local && (local.swipes||0) > (remote.swipes||0)) S = local; }
+  else S = local || blankState();
+  S.filters = Object.assign(defaultFilterss(), S.filters||{});
+  if(!S.favs) S.favs=[];
+  if(!S.muted) S.muted={};
+}
+
+/* ======================= Merkmale eines Films ======================= */
+function feats(m){
+  const out=[];
+  const push=(k,i,s)=>out.push([k+":"+i, s]);
+  m[F.d].forEach(i=>push("d",i,KW.d));
+  m[F.a].forEach((i,ix)=>push("a",i,KW.a*(ix<3?1:.6)));
+  m[F.w].forEach(i=>push("w",i,KW.w));
+  m[F.dp].forEach(i=>push("dp",i,KW.dp));
+  m[F.mu].forEach(i=>push("mu",i,KW.mu));
+  m[F.g].forEach(i=>push("g",i,KW.g));
+  m[F.c].forEach(i=>push("c",i,KW.c));
+  push("l",m[F.l],KW.l);
+  m[F.k].forEach(i=>push("k",i,KW.k));
+  const v=m[F.v];
+  for(let i=0;i<v.length;i+=2){ const rel=v[i+1]/100; if(rel>=.5) out.push(["v:"+v[i], KW.v*(rel-.4)*1.7]); }
+  m[F.f].forEach(i=>push("v",i,KW.v*.55));
+  m[F.co].forEach(i=>push("co",i,KW.co));
+  m[F.mv].forEach(i=>push("mv",i,KW.mv));
+  m[F.aw].forEach(i=>push("aw",i,KW.aw));
+  if(m[F.cl]>=0) push("cl",m[F.cl],KW.cl);
+  out.push(["dec:"+(Math.floor(m[F.y]/10)*10), KW.dec]);
+  out.push(["rt:"+rtBucket(m[F.rt]), KW.rt]);
+  out.push(["pop:"+popTier(m), KW.pop]);
+  return out;
+}
+function rtBucket(r){ return r<80?0 : r<100?1 : r<120?2 : r<145?3 : r<180?4 : 5; }
+function popTier(m){ const v=m[F.iv]; return v>300000?0 : v>80000?1 : v>20000?2 : v>5000?3 : v>1200?4 : 5; }
+function idf(key){ const v = META.idf[key]; return v===undefined ? 4.5 : v; }
+
+/* ---- Merkmale einmalig in Zahlen packen: macht das Bewerten von 26.000
+        Filmen zu reiner Array-Rechnerei statt String-Arbeit ---- */
+let KEYS=[], KEYIDX=new Map(), IDFA=null, PACK=null, NORMA=null;
+function keyId(k){ let i=KEYIDX.get(k); if(i===undefined){ i=KEYS.length; KEYS.push(k); KEYIDX.set(k,i); } return i; }
+function buildPack(){
+  const n=MOVIES.length;
+  PACK=new Array(n); NORMA=new Float32Array(n);
+  for(let i=0;i<n;i++){
+    const fs=feats(MOVIES[i]), L=fs.length;
+    const ks=new Int32Array(L), ss=new Float32Array(L);
+    for(let j=0;j<L;j++){ ks[j]=keyId(fs[j][0]); ss[j]=fs[j][1]; }
+    PACK[i]={k:ks,s:ss};
+  }
+  IDFA=new Float32Array(KEYS.length);
+  for(let i=0;i<KEYS.length;i++) IDFA[i]=idf(KEYS[i]);
+  for(let i=0;i<n;i++){ const p=PACK[i]; let nm=0;
+    for(let j=0;j<p.k.length;j++) nm+=p.s[j]*IDFA[p.k[j]];
+    NORMA[i]=nm; }
+}
+function effSnapshot(seed, src){
+  const W = src? src.w : S.w, N = src? src.n : S.n;
+  const a = new Float32Array(KEYS.length);
+  for(const k in N){
+    const i=KEYIDX.get(k); if(i===undefined) continue;
+    if(!src && S.muted[k]) continue;
+    const nn=N[k]||0; if(!nn) continue;
+    a[i]=(W[k]||0)/(nn+2.2);
+  }
+  if(seed) for(const [k,v] of seed){ const i=KEYIDX.get(k); if(i!==undefined) a[i]+=v*0.30; }
+  return a;
+}
+function fastScore(i, EA){
+  const p=PACK[i], k=p.k, s=p.s; let dot=0;
+  for(let j=0;j<k.length;j++){ const e=EA[k[j]]; if(e!==0) dot+=e*s[j]*IDFA[k[j]]; }
+  const nm=NORMA[i];
+  return nm>0 ? dot/Math.sqrt(nm) : 0;
+}
+
+/* ======================= Lernen ======================= */
+function learn(m, signal){
+  const fs = feats(m);
+  for(const [k,st] of fs){
+    S.w[k] = (S.w[k]||0) + signal*st;
+    S.n[k] = (S.n[k]||0) + Math.abs(signal)*st;
+  }
+}
+function eff(k){
+  if(S.muted[k]) return 0;
+  const n = S.n[k]||0;
+  if(!n) return 0;
+  return (S.w[k]||0) / (n + 2.2);      // Shrinkage: wenige Belege ⇒ vorsichtig
+}
+
+/* ======================= Bewerten ======================= */
+function buildSeedVector(){
+  // temporärer Vektor aus Mood, Schlagwörtern und Referenzfilmen
+  const seed = new Map();
+  const add = (k,v)=>seed.set(k,(seed.get(k)||0)+v);
+  const vIdx = new Map(); META.vibe.forEach((t,i)=>vIdx.set(t,i));
+  for(const id of S.filters.moods){
+    const mo = MOODS.find(x=>x.id===id); if(!mo) continue;
+    for(const t in mo.t){ const i=vIdx.get(t); if(i!=null) add("v:"+i, mo.t[t]*1.5); }
+    if(mo.neg) for(const t in mo.neg){ const i=vIdx.get(t); if(i!=null) add("v:"+i, -mo.neg[t]*1.5); }
+  }
+  const words = (S.filters.words||"").toLowerCase().split(/[,;]+/).map(s=>s.trim()).filter(Boolean);
+  for(const wd of words){
+    META.vibe.forEach((t,i)=>{ if(t.toLowerCase().includes(wd)) add("v:"+i,1.3); });
+    META.keyword.forEach((t,i)=>{ if(t.toLowerCase().includes(wd)) add("k:"+i,1.1); });
+    META.person.forEach((t,i)=>{ if(t && t.toLowerCase().includes(wd)){ add("d:"+i,2.2); add("a:"+i,1.8); } });
+    META.country.forEach((t,i)=>{ if(ccDE(t).toLowerCase().includes(wd)) add("c:"+i,1.6); });
+  }
+  for(const tt of S.filters.refs){
+    const rm = BYID.get(tt); if(!rm) continue;
+    for(const [k,st] of feats(rm)) add(k, st*.55);
+  }
+  return seed;
+}
+
+let LIKESET=new Set();
+function hardPass(m, f){
+  const tt = m[F.tt];
+  if(f.onlyUnseen && S.seen[tt]) return false;
+  if(S.nopes[tt]) return false;
+  if(LIKESET.has(tt)) return false;          // already bookmarked/liked — nicht nochmal zeigen
+  const y=m[F.y]; if(y<f.yFrom || y>f.yTo) return false;
+  const rt=m[F.rt]; if(rt>f.rtMax || rt<f.rtMin) return false;
+  if(f.langs.length && !f.langs.includes(m[F.l])) return false;
+  if(f.exG.length){ for(const g of m[F.g]) if(f.exG.includes(g)) return false; }
+  if(f.provs.length){ let ok=false; for(const p of m[F.pv]) if(f.provs.includes(p)){ok=true;break;} if(!ok) return false; }
+  return true;
+}
+
+function scoreOf(m, seed){
+  const fs = feats(m);
+  let dot=0, norm=0;
+  for(const [k,st] of fs){
+    const w = st*idf(k);
+    norm += w;
+    let e = eff(k);
+    if(seed.size){ const sv = seed.get(k); if(sv) e += sv*0.30; }
+    if(e) dot += e*w;
+  }
+  return norm>0 ? dot/Math.sqrt(norm) : 0;
+}
+
+function contributions(m, seed){
+  const fs = feats(m), out=[];
+  for(const [k,st] of fs){
+    let e = eff(k);
+    if(seed.size){ const sv=seed.get(k); if(sv) e += sv*0.30; }
+    if(e>0) out.push([k, e*st*idf(k)]);
+  }
+  out.sort((a,b)=>b[1]-a[1]);
+  return out;
+}
+
+function nicheAdjust(m, niche){
+  // niche 0 = Mainstream bevorzugt, 100 = je unbekannter desto besser
+  const v = Math.log10(Math.max(m[F.iv],30));         // 1.5 … 6.4
+  const norm = Math.min(1, Math.max(0, (v-1.5)/4.5)); // 0 unbekannt … 1 riesig
+  const want = 1 - niche/100;
+  return -Math.abs(norm-want)*1.9;
+}
+
+function buildQueue(n){
+  const f = S.filters, seed = buildSeedVector();
+  LIKESET = new Set(S.likes);
+  for(const m of QUEUE) LIKESET.add(m[F.tt]);   // schon im aktuellen Stapel — nicht doppelt nachladen
+  const EA = effSnapshot(seed);
+  const PA = (S.coupleOn && S.partner && S.partner.n) ? effSnapshot(null, S.partner) : null;
+  const explore = Math.max(0.25 + Math.min(S.swipes/50, 0.0), 0.95 - S.swipes/120);  // more exploration early
+  const sessDir = new Map();
+  const scored=[];
+  for(let i=0;i<MOVIES.length;i++){
+    const m = MOVIES[i];
+    if(!hardPass(m,f)) continue;
+    let sc = fastScore(i, EA);
+    if(PA){
+      const ps = fastScore(i, PA);
+      sc = Math.min(sc,ps)*0.62 + (sc+ps)/2*0.38;     // der Schwächere entscheidet mit
+    }
+    sc += nicheAdjust(m, f.niche);
+    sc += (m[F.ir]-62)/100*.45;                       // leichte Qualitätsneigung
+    // Increased exploration in early swipes to avoid genre lockdown
+    const rnd = S.swipes < 20 ? (Math.random()-0.5)*explore*4.5 : (Math.random()-0.5)*explore*2.1;
+    sc += rnd;             // Neugier
+    scored.push([sc, m]);
+  }
+  scored.sort((a,b)=>b[0]-a[0]);
+  const out=[];
+  for(const [sc,m] of scored){
+    const dkey = m[F.d][0];
+    const cnt = sessDir.get(dkey)||0;
+    if(cnt>=2 && out.length<n*3) continue;             // Vielfalt: max 2 pro Director
+    sessDir.set(dkey,cnt+1);
+    out.push(m);
+    if(out.length>=n) break;
+  }
+  return {queue:out, seed};
+}
+
+/* ======================= Formatierung ======================= */
+function fmtRt(r){ const h=(r/60)|0, m=r%60; return h? (h+" Std "+(m?m+" Min":"")).trim() : r+" Min"; }
+function nm(i){ return META.person[i]||"—"; }
+function pretty(k){
+  const [t,i]=k.split(":"); const n=+i;
+  switch(t){
+    case "d": return {l:"Director", v:nm(n)};
+    case "a": return {l:"Cast", v:nm(n)};
+    case "w": return {l:"Writer", v:nm(n)};
+    case "dp":return {l:"Cinematography", v:nm(n)};
+    case "mu":return {l:"Music", v:nm(n)};
+    case "g": return {l:"Genre", v:META.genre[n]};
+    case "c": return {l:"Country", v:ccDE(META.country[n])};
+    case "l": return {l:"Language", v:langDE(META.lang[n])};
+    case "k": return {l:"Keyword", v:META.keyword[n]};
+    case "v": return {l:"Vibe", v:vibeDE((META.vibe[n]||"").replace(/^#/,""))};
+    case "co":return {l:"Studio", v:META.company[n]};
+    case "mv":return {l:"Strömung", v:META.movement[n]};
+    case "aw":return {l:"Preis", v:META.award[n]};
+    case "cl":return {l:"Reihe", v:META.collection[n]};
+    case "dec":return {l:"Yeshrzehnt", v:n+"er"};
+    case "rt":return {l:"Länge", v:["unter 80","80–100","100–120","120–145","145–180","über 180"][n]+" Min"};
+    case "pop":return {l:"Bekanntheit", v:["sehr bekannt","bekannt","solide bekannt","Geheimtipp","Niche","ganz tiefe Niche"][n]};
+    default: return {l:"", v:k};
+  }
+}
+function whyText(m, seed){
+  const c = contributions(m, seed).slice(0,3);
+  if(!c.length) return "Frisch aus dem Katalog — noch weiß ich zu wenig über dich.";
+  const parts = c.map(([k])=>{ const p=pretty(k); return p.v; });
+  const uniq=[...new Set(parts)].slice(0,3);
+  return "Passt zu dir: " + uniq.join(" · ");
+}
+function vibeChips(m,max){
+  const v=m[F.v], out=[];
+  for(let i=0;i<v.length && out.length<max;i+=2){
+    if(v[i+1]>=62){ const t=(META.vibe[v[i]]||"").replace(/^#/,""); if(t) out.push(vibeDE(t)); }
+  }
+  if(out.length<max) for(const fi of m[F.f]){ const t=(META.vibe[fi]||"").replace(/^#/,""); if(t&&!out.includes(vibeDE(t))) out.push(vibeDE(t)); if(out.length>=max) break; }
+  return out;
+}
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ======================= UI-Helfer ======================= */
+const $ = s => document.querySelector(s);
+const main = $("#main");
+let toastT=null;
+function toast(msg){
+  const t=$("#toast"); t.textContent=msg; t.classList.add("on");
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("on"),1900);
+}
+function openPanel(title, html, after){
+  $("#panelTitle").textContent=title;
+  $("#panelBody").innerHTML=html;
+  $("#scrim").hidden=false; $("#panel").hidden=false;
+  requestAnimationFrame(()=>{ $("#scrim").classList.add("open"); $("#panel").classList.add("open"); });
+  if(after) after($("#panelBody"));
+}
+function closePanel(){
+  $("#scrim").classList.remove("open"); $("#panel").classList.remove("open");
+  setTimeout(()=>{ $("#scrim").hidden=true; $("#panel").hidden=true; }, 260);
+}
+$("#scrim").addEventListener("click", closePanel);
+$("#panelClose").addEventListener("click", closePanel);
+
+/* ======================= Onboarding ======================= */
+function seedFilms(){
+  // 44 bewusst gestreute Filme: Kanon, Countrieskino, Genre, Arthouse, Niche
+  const pool=[], seenDir=new Set(), byDecade={}, byLang={};
+  const cand = MOVIES.filter(m=>m[F.iv]>2500 && m[F.sh]!=null);
+  cand.sort((a,b)=> (b[F.ir]*Math.log10(b[F.iv])) - (a[F.ir]*Math.log10(a[F.iv])));
+  for(const m of cand){
+    const d=m[F.d][0], dec=Math.floor(m[F.y]/10), lg=m[F.l];
+    if(d!=null && seenDir.has(d)) continue;
+    byDecade[dec]=(byDecade[dec]||0); byLang[lg]=(byLang[lg]||0);
+    if(byDecade[dec]>=6) continue;
+    if(byLang[lg]>=16) continue;
+    seenDir.add(d); byDecade[dec]++; byLang[lg]++;
+    pool.push(m);
+    if(pool.length>=44) break;
+  }
+  return pool;
+}
+function renderOnboarding(step){
+  document.querySelector("#app .actions")?.remove();
+  if(step===1){
+    main.className="ob";
+    main.innerHTML = `
+      <div class="stepbar"><i class="on"></i><i></i><i></i></div>
+      <h1 class="obTitle">Wir finden heraus, <em>was ihr wirklich mögt</em>.</h1>
+      <p class="obSub">Nicht „Drama, 2019, 7,8 Sterne“. Sondern: skandinavische Winterfilme mit langen Settings. Oder alles, was Roger Deakins gefilmt hat. Je mehr du wischst, desto genauer wird es.</p>
+      <div class="field">
+        <label class="lab" for="obName">Wie heißt du?</label>
+        <input class="inp" id="obName" placeholder="Dein Name" autocomplete="given-name" value="${esc(S.name)}">
+      </div>
+      <div class="statRow">
+        <div class="stat"><div class="v">${(META.n).toLocaleString("de-DE")}</div><div class="k">Filme</div></div>
+        <div class="stat"><div class="v">${META.vibe.length.toLocaleString("de-DE")}</div><div class="k">Vibe-Marker</div></div>
+        <div class="stat"><div class="v">${META.person.length.toLocaleString("de-DE")}</div><div class="k">Namen</div></div>
+      </div>
+      <button class="btn wide" id="obNext">Weiter</button>
+      <p class="note">Daten aus IMDb, TMDB, dem MovieLens-Tag-Genome und Wikidata. Alles, was du wischst, bleibt bei dir.</p>`;
+    $("#obNext").onclick = ()=>{ S.name = $("#obName").value.trim(); persist(); renderOnboarding(2); };
+    return;
+  }
+  if(step===2){
+    const pool = seedFilms();
+    const picked = new Set();
+    main.className="ob";
+    main.innerHTML = `
+      <div class="stepbar"><i class="on"></i><i class="on"></i><i></i></div>
+      <h1 class="obTitle">Tipp alles an, was du <em>liebst</em>.</h1>
+      <p class="obSub">Fünf reichen, zwanzig sind besser. Nur das, was dich wirklich trifft — nicht das, was man gut finden soll.</p>
+      <div class="seedGrid" id="seedGrid"></div>
+      <button class="btn wide" id="obNext2">Weiter <span id="seedCount" class="mono"></span></button>`;
+    const grid = $("#seedGrid");
+    grid.innerHTML = pool.map(m=>{
+      const ps = posterStyle(m);
+      return `<button class="seed" data-tt="${m[F.tt]}" style="${ps?ps:"background:"+gradOf(m)}" title="${esc(m[F.ti])} (${m[F.y]})">
+        ${ps?"":`<span class="ini">${esc(m[F.ti])}</span>`}
+        <span class="mark"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span></button>`;
+    }).join("");
+    grid.addEventListener("click", e=>{
+      const b = e.target.closest(".seed"); if(!b) return;
+      const tt = +b.dataset.tt;
+      if(picked.has(tt)){ picked.delete(tt); b.classList.remove("on"); }
+      else { picked.add(tt); b.classList.add("on"); }
+      $("#seedCount").textContent = picked.size ? "· "+picked.size : "";
+    });
+    $("#obNext2").onclick = ()=>{
+      for(const tt of picked){ const m=BYID.get(tt); if(m){ learn(m, 1.35); S.seen[tt]=2; } }
+      S.swipes += picked.size;
+      persist(); renderOnboarding(3);
+    };
+    return;
+  }
+  main.className="ob";
+  main.innerHTML = `
+    <div class="stepbar"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+    <h1 class="obTitle">Hast du <em>Letterboxd</em>?</h1>
+    <p class="obSub">Dann startet dein Tastesprofil nicht bei null, sondern kennt jeden Film, den du je eingetragen hast. Der Import dauert zehn Sekunden.</p>
+    ${letterboxdBlock()}
+    <div class="divider"></div>
+    <button class="btn wide" id="obDone">Los geht's</button>`;
+  wireLetterboxd(main);
+  $("#obDone").onclick = ()=>{ S.born = Date.now(); persist(); renderDeck(); };
+}
+
+function letterboxdBlock(){
+  return `
+  <div class="field">
+    <div class="note">
+      <b style="color:var(--ink2)">So kommst du an deine Datei:</b><br>
+      1. Öffne <a href="https://letterboxd.com/settings/data/" target="_blank" rel="noopener">letterboxd.com/settings/data</a><br>
+      2. Klick auf <b style="color:var(--ink2)">Export your data</b> — du bekommst eine ZIP-Datei<br>
+      3. Pack sie aus und lade hier <code>watched.csv</code>, <code>ratings.csv</code> oder <code>watchlist.csv</code> hoch (mehrere auf einmal geht auch)
+    </div>
+    <input class="inp" type="file" id="lbxFile" accept=".csv,text/csv" multiple>
+    <div class="note" id="lbxMsg"></div>
+  </div>`;
+}
+function wireLetterboxd(root){
+  const inp = root.querySelector("#lbxFile"); if(!inp) return;
+  inp.addEventListener("change", async ()=>{
+    const msg = root.querySelector("#lbxMsg");
+    let hit=0, miss=0, rated=0;
+    const idx = buildTitleIndex();
+    for(const file of inp.files){
+      const txt = await file.text();
+      const rows = parseCSV(txt);
+      if(!rows.length) continue;
+      const head = rows[0].map(h=>h.trim().toLowerCase());
+      const iName = head.indexOf("name"), iYear = head.indexOf("year"), iRate = head.indexOf("rating");
+      const isWatchlist = /watchlist/i.test(file.name);
+      for(let r=1;r<rows.length;r++){
+        const row = rows[r]; if(!row[iName]) continue;
+        const m = matchTitle(idx, row[iName], iYear>=0 ? +row[iYear] : 0);
+        if(!m){ miss++; continue; }
+        hit++;
+        const tt = m[F.tt];
+        if(isWatchlist){ if(!S.likes.includes(tt)) S.likes.push(tt); continue; }
+        const rate = iRate>=0 ? parseFloat(row[iRate]) : NaN;
+        S.seen[tt] = 1;
+        if(!isNaN(rate)){
+          rated++;
+          const sig = (rate-3)/2*1.5;               // 0.5★ → −1.9 … 5★ → +1.5
+          if(Math.abs(sig)>.15) learn(m, sig);
+          if(rate>=4 && !S.likes.includes(tt)) S.likes.push(tt);
+        } else learn(m, .35);
+      }
+    }
+    S.lbx = Date.now(); S.swipes += hit;
+    persist();
+    msg.innerHTML = `<b style="color:var(--yes)">${hit} Filme übernommen</b>${rated?`, davon ${rated} mit Bewertung`:""}${miss?` · ${miss} nicht in der Database gefunden`:""}.`;
+    inp.value="";
+  });
+}
+function parseCSV(t){
+  const rows=[]; let row=[], cur="", q=false;
+  for(let i=0;i<t.length;i++){
+    const c=t[i];
+    if(q){ if(c==='"'){ if(t[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+    else if(c==='"') q=true;
+    else if(c===","){ row.push(cur); cur=""; }
+    else if(c==="\n"){ row.push(cur); rows.push(row); row=[]; cur=""; }
+    else if(c!=="\r") cur+=c;
+  }
+  if(cur||row.length){ row.push(cur); rows.push(row); }
+  return rows;
+}
+let TIDX=null;
+function normT(s){ return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,""); }
+function buildTitleIndex(){
+  if(TIDX) return TIDX;
+  TIDX = new Map();
+  for(const m of MOVIES){
+    for(const t of [m[F.ti], m[F.ot]]){
+      if(!t) continue;
+      const k = normT(t); if(!k) continue;
+      if(!TIDX.has(k)) TIDX.set(k, []);
+      TIDX.get(k).push(m);
+    }
+  }
+  return TIDX;
+}
+function matchTitle(idx, name, year){
+  const arr = idx.get(normT(name)); if(!arr) return null;
+  if(arr.length===1) return arr[0];
+  if(year){ let best=null, bd=99; for(const m of arr){ const d=Math.abs(m[F.y]-year); if(d<bd){bd=d;best=m;} } if(bd<=1) return best; }
+  return arr.slice().sort((a,b)=>b[F.iv]-a[F.iv])[0];
+}
+
+/* ======================= Deck ======================= */
+let QUEUE=[], SEED=new Map(), HIST=[], cardEls=[];
+function renderDeck(){
+  main.className="stage";
+  main.innerHTML = `<div id="deck"></div>`;
+  const wrap = document.createElement("div");
+  refillQueue();
+  document.getElementById("app").querySelector(".actions")?.remove();
+  const acts = document.createElement("div");
+  acts.className="actions";
+  acts.innerHTML = `
+    <button class="act small" id="aUndo" title="Zurück" aria-label="Zurück"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/></svg></button>
+    <button class="act no" id="aNo" title="No" aria-label="No"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <button class="act seen" id="aSeen" title="Already watched" aria-label="Already watched"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></svg></button>
+    <button class="act yes" id="aYes" title="Yes" aria-label="Yes"><svg viewBox="0 0 24 24"><path d="M12 20s-7.5-4.7-7.5-10A4.5 4.5 0 0112 7.2 4.5 4.5 0 0119.5 10c0 5.3-7.5 10-7.5 10z"/></svg></button>`;
+  document.getElementById("app").appendChild(acts);
+  $("#aNo").onclick = ()=>decide(-1);
+  $("#aYes").onclick = ()=>decide(1);
+  $("#aSeen").onclick = ()=>decide(0);
+  $("#aUndo").onclick = undo;
+  paint();
+  updateBadge();
+}
+function refillQueue(){
+  const r = buildQueue(60);
+  QUEUE = r.queue; SEED = r.seed;
+}
+function updateBadge(){
+  const b=$("#wlBadge");
+  if(S.likes.length){ b.hidden=false; b.textContent = S.likes.length>99?"99+":S.likes.length; }
+  else b.hidden=true;
+}
+
+function cardHTML(m){
+  const ps = posterStyle(m);
+  const gen = ps ? "" : `<div class="gen" style="background:${gradOf(m)}"><span>${esc(m[F.ti])}</span></div>`;
+  const rating = m[F.ir] ? (m[F.ir]/10).toFixed(1).replace(".",",") : "—";
+  const votes = m[F.iv] ? (m[F.iv]>=1000 ? Math.round(m[F.iv]/1000)+"k" : m[F.iv]) : "";
+  const genres = m[F.g].map(i=>META.genre[i]).filter(Boolean);
+  const vibes = vibeChips(m,4);
+  const provs = m[F.pv].map(i=>META.provider[i]).filter(Boolean).slice(0,3);
+  const country = m[F.c].map(i=>ccDE(META.country[i])).filter(Boolean).slice(0,2).join(" / ");
+  const dir = m[F.d].map(nm).join(", ");
+  const cast = m[F.a].slice(0,3).map(nm).join(" · ");
+  const dop = m[F.dp].map(nm).join(", ");
+  const cert = m[F.ce]>=0 ? META.cert[m[F.ce]] : "";
+  const marked = S.likes.includes(m[F.tt]);
+  return `
+  <div class="hero">
+    ${ps?`<div class="poster" style="${ps}"></div>`:""}
+    ${gen}
+    <div class="grain"></div><div class="veil"></div>
+    <button class="bookmark ${marked?"on":""}" data-mark="${m[F.tt]}" title="${marked?"Remove bookmark":"Bookmark"}" aria-label="${marked?"Remove bookmark nehmen":"Bookmark"}">
+      <svg viewBox="0 0 24 24"><path d="M6 4h12v16l-6-4-6 4z"/></svg></button>
+    <div class="rt mono"><b>${fmtRt(m[F.rt])}</b><span style="opacity:.6">${m[F.y]}</span></div>
+    <div class="score mono"><i>★</i>${rating}${votes?`<span style="opacity:.55">${votes}</span>`:""}</div>
+  </div>
+  <div class="body">
+    <div class="titleRow"><div style="flex:1">
+      <h2 class="ftitle">${esc(m[F.ti])}</h2>
+      ${m[F.ot]?`<div class="orig">${esc(m[F.ot])}</div>`:""}
+    </div></div>
+    <div class="facts">
+      ${country?`<span>${esc(country)}</span><span class="dot"></span>`:""}
+      <span>${esc(langDE(META.lang[m[F.l]]))}</span>
+      ${cert?`<span class="dot"></span><span>ab ${esc(cert)}</span>`:""}
+      ${m[F.bw]?`<span class="dot"></span><span>schwarzweiß</span>`:""}
+    </div>
+    <div class="chips">${genres.map(g=>`<span class="chip">${esc(g)}</span>`).join("")}</div>
+    ${vibes.length?`<div class="chips">${vibes.map(v=>`<span class="chip vibe">${esc(v)}</span>`).join("")}</div>`:""}
+    ${m[F.s]?`<p class="synopsis">${esc(m[F.s])}</p>`:""}
+    <div class="crew">
+      ${dir?`<b>Director</b> ${esc(dir)}<br>`:""}
+      ${cast?`<b>Cast</b> ${esc(cast)}<br>`:""}
+      ${dop?`<b>Cinematography</b> ${esc(dop)}`:""}
+    </div>
+    ${provs.length?`<div class="chips">${provs.map(p=>`<span class="chip prov">${esc(p)}</span>`).join("")}</div>`:""}
+    <div class="why"><svg viewBox="0 0 24 24"><path d="M12 3v2M12 19v2M5 12H3M21 12h-2M6.3 6.3L4.9 4.9M19.1 19.1l-1.4-1.4M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/><circle cx="12" cy="12" r="3.2"/></svg>
+      <span>${esc(whyText(m, SEED))}</span></div>
+  </div>
+  <div class="stamp y">Yes</div><div class="stamp n">No</div><div class="stamp s">Seen</div>`;
+}
+
+function paint(){
+  const deck = $("#deck") || main;
+  if(!QUEUE.length) refillQueue();
+  if(!QUEUE.length){
+    main.className="stage";
+    main.innerHTML = `<div class="empty">
+      <h3>All swiped</h3>
+      <p class="note">No films match your filters. Broaden your mood, adjust the niche slider, or allow films you've seen.</p>
+      <button class="btn" id="eFix">Adjust filters</button></div>`;
+    $("#eFix").onclick = openFilterss;
+    return;
+  }
+  main.className="stage";
+  const three = QUEUE.slice(0,3);
+  main.innerHTML = three.map((m,i)=>
+    `<article class="card ${i===1?"behind":i===2?"behind2":""}" data-tt="${m[F.tt]}" style="z-index:${10-i}">${cardHTML(m)}</article>`
+  ).reverse().join("");
+  cardEls = [...main.querySelectorAll(".card")].reverse();
+  attachDrag(cardEls[0]);
+  prefetchSheets(QUEUE.slice(0,14));
+}
+const fetchedSheets=new Set();
+function prefetchSheets(ms){
+  for(const m of ms){
+    const sh = m[F.sh];
+    if(sh==null || fetchedSheets.has(sh)) continue;
+    fetchedSheets.add(sh);
+    const im = new Image(); im.src = sheetUrl(sh);
+  }
+}
+
+/* ---------- Wischen ---------- */
+function attachDrag(card){
+  if(!card) return;
+  let sx=0, sy=0, dx=0, dy=0, drag=false, id=null;
+  const sY=card.querySelector(".stamp.y"), sN=card.querySelector(".stamp.n"), sS=card.querySelector(".stamp.s");
+  const body = card.querySelector(".body");
+  const bm = card.querySelector(".bookmark");
+  if(bm) bm.addEventListener("click", e=>{
+    e.stopPropagation();
+    const tt = +bm.dataset.mark;
+    const on = S.likes.includes(tt);
+    if(on){ S.likes = S.likes.filter(x=>x!==tt); }
+    else { S.likes.push(tt); }
+    bm.classList.toggle("on", !on);
+    bm.title = bm.ariaLabel = !on ? "Remove bookmark nehmen" : "Bookmark";
+    persist(); updateBadge();
+    toast(!on?"Bookmarked.":"Removed from bookmarks.");
+  });
+  card.addEventListener("pointerdown", e=>{
+    if(e.target.closest(".bookmark")) return;
+    if(e.target.closest(".body") && body.scrollHeight>body.clientHeight+4 && e.target.closest(".synopsis,.crew")) {/* erlaubt scrollen */}
+    drag=true; id=e.pointerId; sx=e.clientX; sy=e.clientY; card.setPointerCapture(id);
+    card.style.transition="none";
+  });
+  card.addEventListener("pointermove", e=>{
+    if(!drag||e.pointerId!==id) return;
+    dx=e.clientX-sx; dy=e.clientY-sy;
+    if(Math.abs(dy)>Math.abs(dx)*1.4 && dy>0 && body.scrollTop>0) return;
+    card.style.transform=`translate(${dx}px,${dy}px) rotate(${dx/22}deg)`;
+    const up = dy < -70 && Math.abs(dx) < 90;
+    sY.style.opacity = !up && dx>32 ? Math.min(1,(dx-32)/70) : 0;
+    sN.style.opacity = !up && dx<-32 ? Math.min(1,(-dx-32)/70) : 0;
+    sS.style.opacity = up ? Math.min(1,(-dy-70)/60) : 0;
+    if(sY.style.opacity>.3) sY.style.transform="rotate(-8deg) scale(1)"; else sY.style.transform="rotate(-8deg) scale(.85)";
+    if(sN.style.opacity>.3) sN.style.transform="rotate(8deg) scale(1)"; else sN.style.transform="rotate(8deg) scale(.85)";
+    if(sS.style.opacity>.3) sS.style.transform="scale(1)"; else sS.style.transform="scale(.85)";
+  });
+  const end = e=>{
+    if(!drag||(id!=null&&e.pointerId!==id)) return;
+    drag=false; card.style.transition="";
+    if(dy < -110 && Math.abs(dx) < 110) return decide(0);
+    if(dx > 105) return decide(1);
+    if(dx < -105) return decide(-1);
+    card.style.transform="";
+    sY.style.opacity=sN.style.opacity=sS.style.opacity=0;
+    dx=dy=0;
+  };
+  card.addEventListener("pointerup", end);
+  card.addEventListener("pointercancel", end);
+}
+document.addEventListener("keydown", e=>{
+  if(!$("#panel").hidden) { if(e.key==="Escape") closePanel(); return; }
+  if(e.target.matches("input,textarea,select")) return;
+  if(e.key==="ArrowRight"||e.key==="d") decide(1);
+  else if(e.key==="ArrowLeft"||e.key==="a") decide(-1);
+  else if(e.key==="ArrowUp"||e.key==="w") decide(0);
+  else if(e.key==="Backspace"){ e.preventDefault(); undo(); }
+});
+
+let busy=false;
+function decide(kind){
+  if(busy || !QUEUE.length) return;
+  busy=true;
+  const m = QUEUE[0];
+  const card = cardEls[0];
+  const tt = m[F.tt];
+  HIST.push({tt, kind, w:{}, n:{}});
+  const h = HIST[HIST.length-1];
+  const before = feats(m);
+  for(const [k] of before){ h.w[k]=S.w[k]||0; h.n[k]=S.n[k]||0; }
+
+  if(kind===1){ learn(m, 1); if(!S.likes.includes(tt)) S.likes.push(tt); }
+  else if(kind===-1){ learn(m, -.62); S.nopes[tt]=1; }
+  else { S.seen[tt]=1; learn(m, .22); }
+  S.swipes++;
+  persist(); updateBadge();
+
+  if(card){
+    card.style.transition="transform .3s cubic-bezier(.4,0,.6,1),opacity .3s";
+    const t = kind===1 ? "translate(140%,-8%) rotate(18deg)" : kind===-1 ? "translate(-140%,-8%) rotate(-18deg)" : "translateY(-130%) scale(.92)";
+    card.style.transform=t; card.style.opacity="0";
+  }
+  QUEUE.shift();
+  setTimeout(()=>{
+    busy=false;
+    if(QUEUE.length<6) refillQueue();
+    paint();
+    if(kind===0) askSeenRating(m);
+    if(S.swipes===12) toast("Dein Profile greift jetzt — die Vorschläge werden schärfer.");
+  }, 240);
+}
+function askSeenRating(m){
+  const box = document.createElement("div");
+  box.className="seenAsk";
+  box.innerHTML = `<button data-v="1.3">War super</button><button data-v="0">War okay</button><button data-v="-0.9">Mochte ich nicht</button>`;
+  main.appendChild(box);
+  const kill = ()=>box.remove();
+  const t = setTimeout(kill, 4200);
+  box.addEventListener("click", e=>{
+    const b=e.target.closest("button"); if(!b) return;
+    const v = parseFloat(b.dataset.v);
+    if(v>0){ learn(m, v); S.seen[m[F.tt]]=2; if(!S.favs.includes(m[F.tt]) && S.favs.length<50) {} }
+    else if(v<0){ learn(m, v); S.seen[m[F.tt]]=0; }
+    persist(); clearTimeout(t); kill();
+    toast(v>0?"Bookmarked — more like this.":v<0?"Bookmarked — less like this.":"Thanks.");
+  });
+}
+function undo(){
+  const h = HIST.pop();
+  if(!h){ toast("Nichts zum Zurücknehmen."); return; }
+  for(const k in h.w){ S.w[k]=h.w[k]; S.n[k]=h.n[k]; }
+  const m = BYID.get(h.tt);
+  if(h.kind===1) S.likes = S.likes.filter(x=>x!==h.tt);
+  if(h.kind===-1) delete S.nopes[h.tt];
+  if(h.kind===0) delete S.seen[h.tt];
+  S.swipes = Math.max(0,S.swipes-1);
+  if(m) QUEUE.unshift(m);
+  persist(); updateBadge(); paint();
+  toast("Zurückgenommen.");
+}
+
+/* ======================= Filters-Panel ======================= */
+function openFilterss(){
+  const f = S.filters;
+  const topLangs = ["en","de","fr","it","es","ja","ko","sv","da","no","fi","zh","ru","pl","cs","fa","hi","pt","tr","nl"]
+    .map(c=>[c, META.lang.indexOf(c)]).filter(x=>x[1]>=0);
+  const provCount = {};
+  for(const m of MOVIES) for(const p of m[F.pv]) provCount[p]=(provCount[p]||0)+1;
+  const topProvs = Object.entries(provCount).sort((a,b)=>b[1]-a[1]).slice(0,12).map(x=>+x[0]);
+  const html = `
+    <div class="field"><span class="lab">Mood heute Abend</span>
+      <div class="row">${MOODS.map(mo=>`<button class="toggle ${f.moods.includes(mo.id)?"on":""}" data-mood="${mo.id}">${mo.n}</button>`).join("")}</div></div>
+
+    <div class="field"><span class="lab">Freie Schlagwörter</span>
+      <input class="inp" id="fWords" placeholder="z. B. Schnee, Tarkowski, Neon, Schweden, Deakins" value="${esc(f.words)}">
+      <div class="note">Cast Komma trennen. Funktioniert für Vibes, Themen, Namen und Länder.</div></div>
+
+    <div class="field"><span class="lab">Referenzfilme — „so etwas wie …“</span>
+      <input class="inp" id="fRef" placeholder="Filmtitel tippen und auswählen">
+      <div id="refHits" class="mlist"></div>
+      <div class="row" id="refList">${f.refs.map(tt=>{const m=BYID.get(tt);return m?`<button class="toggle on" data-ref="${tt}">${esc(m[F.ti])} ✕</button>`:"";}).join("")}</div></div>
+
+    <div class="two">
+      <div class="field"><span class="lab">Ab Yeshr <span class="rangeVal" id="vFrom">${f.yFrom}</span></span>
+        <input type="range" id="fFrom" min="1920" max="2026" value="${f.yFrom}"></div>
+      <div class="field"><span class="lab">Bis Yeshr <span class="rangeVal" id="vTo">${f.yTo}</span></span>
+        <input type="range" id="fTo" min="1920" max="2026" value="${f.yTo}"></div>
+    </div>
+
+    <div class="field"><span class="lab">Höchstens <span class="rangeVal" id="vRt">${fmtRt(f.rtMax)}</span></span>
+      <input type="range" id="fRt" min="60" max="300" step="5" value="${f.rtMax}"></div>
+
+    <div class="field"><span class="lab">Wie tief in die Niche? <span class="rangeVal" id="vNiche">${nicheLabel(f.niche)}</span></span>
+      <input type="range" id="fNiche" min="0" max="100" value="${f.niche}">
+      <div class="note">Links: Filme, die jeder kennt. Rechts: Sachen, die außer dir kaum jemand gesehen hat.</div></div>
+
+    <div class="field"><span class="lab">Language</span>
+      <div class="row">${topLangs.map(([c,i])=>`<button class="toggle ${f.langs.includes(i)?"on":""}" data-lang="${i}">${langDE(c)}</button>`).join("")}</div></div>
+
+    <div class="field"><span class="lab">Wo du es streamen kannst</span>
+      <div class="row">${topProvs.map(i=>`<button class="toggle ${f.provs.includes(i)?"on":""}" data-prov="${i}">${esc(META.provider[i])}</button>`).join("")}</div>
+      <div class="note">Availability in DE, last data sync.</div></div>
+
+    <div class="field"><span class="lab">Kein Bock auf</span>
+      <div class="row">${META.genre.map((g,i)=>`<button class="toggle ${f.exG.includes(i)?"on":""}" data-exg="${i}">${esc(g)}</button>`).join("")}</div></div>
+
+    <div class="field"><span class="lab">Already watchede Filme</span>
+      <div class="row"><button class="toggle ${f.onlyUnseen?"on":""}" id="fUnseen">ausblenden</button></div></div>
+
+    <div class="two">
+      <button class="btn ghost" id="fReset">Zurücksetzen</button>
+      <button class="btn" id="fApply">Anwenden</button>
+    </div>`;
+  openPanel("Mood & Filters", html, root=>{
+    const f2 = S.filters;
+    root.addEventListener("click", e=>{
+      const b = e.target.closest("button[data-mood],button[data-lang],button[data-prov],button[data-exg],button[data-ref]");
+      if(!b) return;
+      const tgl=(arr,v)=>{ const i=arr.indexOf(v); if(i<0) arr.push(v); else arr.splice(i,1); };
+      if(b.dataset.mood!=null){ tgl(f2.moods, b.dataset.mood); b.classList.toggle("on"); }
+      if(b.dataset.lang!=null){ tgl(f2.langs, +b.dataset.lang); b.classList.toggle("on"); }
+      if(b.dataset.prov!=null){ tgl(f2.provs, +b.dataset.prov); b.classList.toggle("on"); }
+      if(b.dataset.exg!=null){ tgl(f2.exG, +b.dataset.exg); b.classList.toggle("on"); }
+      if(b.dataset.ref!=null){ f2.refs = f2.refs.filter(x=>x!==+b.dataset.ref); b.remove(); }
+    });
+    const bind=(id,valId,fmt,key)=>{ const el=root.querySelector(id); el.addEventListener("input",()=>{ f2[key]=+el.value; root.querySelector(valId).textContent=fmt(+el.value); }); };
+    bind("#fFrom","#vFrom",v=>v,"yFrom"); bind("#fTo","#vTo",v=>v,"yTo");
+    bind("#fRt","#vRt",fmtRt,"rtMax"); bind("#fNiche","#vNiche",nicheLabel,"niche");
+    root.querySelector("#fUnseen").onclick = e=>{ f2.onlyUnseen=!f2.onlyUnseen; e.target.classList.toggle("on",f2.onlyUnseen); };
+    const ref = root.querySelector("#fRef"), hits = root.querySelector("#refHits");
+    ref.addEventListener("input", ()=>{
+      const q = ref.value.trim().toLowerCase();
+      if(q.length<2){ hits.innerHTML=""; return; }
+      const res = searchMovies(q, 6);
+      hits.innerHTML = res.map(m=>miniRow(m,"data-pick='"+m[F.tt]+"'")).join("");
+    });
+    hits.addEventListener("click", e=>{
+      const b=e.target.closest("[data-pick]"); if(!b) return;
+      const tt=+b.dataset.pick;
+      if(!f2.refs.includes(tt)) f2.refs.push(tt);
+      const m=BYID.get(tt);
+      root.querySelector("#refList").insertAdjacentHTML("beforeend",
+        `<button class="toggle on" data-ref="${tt}">${esc(m[F.ti])} ✕</button>`);
+      ref.value=""; hits.innerHTML="";
+    });
+    root.querySelector("#fReset").onclick = ()=>{ S.filters=defaultFilterss(); persist(); closePanel(); refillQueue(); paint(); toast("Filters zurückgesetzt."); };
+    root.querySelector("#fApply").onclick = ()=>{ f2.words = root.querySelector("#fWords").value; persist(); closePanel(); refillQueue(); paint(); toast("Neuer Stapel."); };
+  });
+}
+function nicheLabel(v){ return v<15?"Nur Bekanntes":v<35?"Eher bekannt":v<55?"Gemischt":v<75?"Gern abseits":v<90?"Tiefe Niche":"Ganz tief"; }
+function searchMovies(q, n){
+  const qq = normT(q); const out=[];
+  for(const m of MOVIES){
+    if(normT(m[F.ti]).includes(qq) || (m[F.ot]&&normT(m[F.ot]).includes(qq))) out.push(m);
+    if(out.length>400) break;
+  }
+  out.sort((a,b)=>b[F.iv]-a[F.iv]);
+  return out.slice(0,n);
+}
+function miniRow(m, attrs){
+  const ps = posterStyle(m);
+  return `<button class="mitem" ${attrs||""}>
+    <span class="mthumb" style="${ps?ps:"background:"+gradOf(m)}">${ps?"":`<span class="ini">${esc(m[F.ti][0]||"?")}</span>`}</span>
+    <span class="mmeta"><span class="t">${esc(m[F.ti])}</span>
+    <span class="s">${m[F.y]} · ${fmtRt(m[F.rt])} · ${esc(m[F.d].map(nm)[0]||"")}</span></span></button>`;
+}
+
+/* ======================= Listen ======================= */
+function openLists(){
+  const tabs = [["like","Bookmarks",S.likes],
+                ["seen","Seen",Object.keys(S.seen).map(Number)],
+                ["nope","Aussortiert",Object.keys(S.nopes).map(Number)]];
+  const body = tabs.map(([id,label,arr])=>`
+    <div class="field" data-tab="${id}" ${id!=="like"?"hidden":""}>
+      ${arr.length?`<div class="mlist">${arr.slice().reverse().slice(0,150).map(tt=>{const m=BYID.get(tt);return m?miniRow(m,`data-open="${tt}"`):"";}).join("")}</div>`
+        :`<p class="note">Noch nichts hier.</p>`}
+    </div>`).join("");
+  openPanel("Deine Listen", `
+    <div class="row">${tabs.map(([id,label,arr],i)=>`<button class="toggle ${i===0?"on":""}" data-t="${id}">${label} <span class="mono" style="opacity:.6">${arr.length}</span></button>`).join("")}</div>
+    ${body}`, root=>{
+      root.addEventListener("click", e=>{
+        const t=e.target.closest("[data-t]");
+        if(t){ root.querySelectorAll("[data-t]").forEach(b=>b.classList.toggle("on", b===t));
+               root.querySelectorAll("[data-tab]").forEach(d=>d.hidden = d.dataset.tab!==t.dataset.t); return; }
+        const o=e.target.closest("[data-open]");
+        if(o) showFilm(+o.dataset.open);
+      });
+  });
+}
+function showFilm(tt){
+  const m = BYID.get(tt); if(!m) return;
+  const ps = posterStyle(m);
+  const liked = S.likes.includes(tt), seen = S.seen[tt]!=null, fav = S.favs.includes(tt);
+  openPanel(m[F.ti], `
+    <div style="display:flex;gap:14px">
+      <div style="width:110px;aspect-ratio:185/278;border-radius:12px;flex:0 0 auto;${ps?ps:"background:"+gradOf(m)};background-repeat:no-repeat"></div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px">
+        ${m[F.ot]?`<div class="orig">${esc(m[F.ot])}</div>`:""}
+        <div class="facts"><span class="mono">${m[F.y]}</span><span class="dot"></span><span class="mono">${fmtRt(m[F.rt])}</span><span class="dot"></span><span class="mono">★ ${(m[F.ir]/10).toFixed(1).replace(".",",")}</span></div>
+        <div class="chips">${m[F.g].map(i=>`<span class="chip">${esc(META.genre[i])}</span>`).join("")}</div>
+        <div class="crew"><b>Director</b> ${esc(m[F.d].map(nm).join(", "))}</div>
+      </div>
+    </div>
+    ${m[F.s]?`<p class="synopsis">${esc(m[F.s])}</p>`:""}
+    <div class="chips">${vibeChips(m,6).map(v=>`<span class="chip vibe">${esc(v)}</span>`).join("")}</div>
+    <div class="two">
+      <button class="btn ghost" id="dFav">${fav?"Aus Favoriten":"Zu Favoriten"}</button>
+      <button class="btn ghost" id="dSeen">${seen?"Nicht gesehen":"Als gesehen"}</button>
+    </div>
+    <button class="btn wide ghost" id="dLike">${liked?"Von Bookmarks nehmen":"Auf die Bookmarks"}</button>
+  `, root=>{
+    root.querySelector("#dFav").onclick=()=>{
+      if(fav) S.favs=S.favs.filter(x=>x!==tt); else S.favs.unshift(tt);
+      persist(); closePanel(); toast(fav?"Aus Favoriten entfernt.":"Zu den Favoriten.");
+    };
+    root.querySelector("#dSeen").onclick=()=>{
+      if(seen) delete S.seen[tt]; else S.seen[tt]=1;
+      persist(); closePanel(); toast(seen?"Wieder als ungesehen.":"Als gesehen markiert.");
+    };
+    root.querySelector("#dLike").onclick=()=>{
+      if(liked) S.likes=S.likes.filter(x=>x!==tt); else S.likes.push(tt);
+      persist(); updateBadge(); closePanel();
+    };
+  });
+}
+
+/* ======================= Profile & DNA ======================= */
+function topFeatures(kind, n){
+  const out=[];
+  for(const k in S.n){
+    if(!k.startsWith(kind+":")) continue;
+    const e = eff(k), obs = S.n[k];
+    if(obs < 1.1) continue;
+    if(Math.abs(e) < .035) continue;
+    out.push([k, e, obs]);
+  }
+  out.sort((a,b)=>Math.abs(b[1])*Math.log(1+b[2]) - Math.abs(a[1])*Math.log(1+a[2]));
+  return out.slice(0,n);
+}
+function dnaGroup(title, kind, n){
+  const rows = topFeatures(kind, n);
+  if(!rows.length) return "";
+  return `<div class="dnaGroup"><div class="dnaHead">${title}</div>
+    ${rows.map(([k,e])=>{
+      const p = pretty(k), pos = e>0, w = Math.min(42, Math.abs(e)*100);
+      return `<div class="dnaBar"><span class="nm">${esc(p.v)}</span>
+        <span class="tr"><i style="${pos?`left:50%;width:${w}%;background:var(--yes)`:`right:50%;left:auto;width:${w}%;background:var(--no)`}"></i></span>
+        <button data-mute="${esc(k)}" title="Dislike">×</button></div>`;
+    }).join("")}</div>`;
+}
+function openProfilee(){
+  const seenN = Object.keys(S.seen).length;
+  const html = `
+    <div class="field">
+      <label class="lab" for="pName">Name</label>
+      <input class="inp" id="pName" value="${esc(S.name)}" placeholder="Dein Name">
+    </div>
+    <div class="statRow">
+      <div class="stat"><div class="v">${S.swipes}</div><div class="k">Entscheidungen</div></div>
+      <div class="stat"><div class="v">${seenN}</div><div class="k">gesehen</div></div>
+      <div class="stat"><div class="v">${S.likes.length}</div><div class="k">bookmarked</div></div>
+    </div>
+
+    <div class="field"><span class="lab">Deine Bestenliste</span>
+      <div class="note">Platz 1 ist dein All-Time-Favorit und zählt am stärksten für deinen Taste. Cast den Pfeilen verschieben.</div>
+      <input class="inp" id="favSearch" placeholder="Film suchen und hinzufügen">
+      <div id="favHits" class="mlist"></div>
+      <div id="favList" class="mlist">${favListHTML()}</div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="field"><span class="lab">Was ich über dich gelernt habe</span>
+      ${S.swipes<6?`<p class="note">Noch zu früh — wisch ein paar Filme, dann steht hier deine Tastes-DNA.</p>`:""}
+      ${dnaGroup("Director",'d',6)}
+      ${dnaGroup("Cast",'a',6)}
+      ${dnaGroup("Cinematography",'dp',3)}
+      ${dnaGroup("Vibes",'v',10)}
+      ${dnaGroup("Themen",'k',8)}
+      ${dnaGroup("Länder",'c',5)}
+      ${dnaGroup("Genres",'g',6)}
+      ${dnaGroup("Yeshrzehnte",'dec',4)}
+      ${dnaGroup("Strömungen",'mv',3)}
+    </div>
+
+    <div class="divider"></div>
+    <div class="field"><span class="lab">Letterboxd</span>${letterboxdBlock()}</div>
+
+    <div class="divider"></div>
+    <div class="field"><span class="lab">Abend zu zweit</span>
+      <div class="note">Dein eigenes Profile bleibt unangetastet. Der Abend-Modus sucht Filme, die zu euch beiden passen.</div>
+      <button class="btn ghost wide" id="pCouple">${S.partner?"Abend-Modus öffnen":"Zweites Profile anlegen"}</button>
+    </div>
+
+    <div class="divider"></div>
+    <div class="two">
+      <button class="btn ghost" id="pTheme">Light / Dark</button>
+      <button class="btn ghost" id="pWipe">Alles zurücksetzen</button>
+    </div>
+    <p class="note">Gespeichert wird ${DB?"in deinem Konto — auf jedem Gerät gleich":"in diesem Browser"}.</p>`;
+  openPanel("Profile", html, root=>{
+    root.querySelector("#pName").addEventListener("change", e=>{ S.name=e.target.value.trim(); persist(); });
+    root.addEventListener("click", e=>{
+      const mu = e.target.closest("[data-mute]");
+      if(mu){ S.muted[mu.dataset.mute]=1; persist(); mu.closest(".dnaBar").style.opacity=".3"; mu.disabled=true; toast("Merkmal abgeschaltet."); return; }
+      const up = e.target.closest("[data-up]");
+      if(up){ const i=+up.dataset.up; if(i>0){ const a=S.favs; [a[i-1],a[i]]=[a[i],a[i-1]]; persist(); root.querySelector("#favList").innerHTML=favListHTML(); } return; }
+      const dn = e.target.closest("[data-down]");
+      if(dn){ const i=+dn.dataset.down; const a=S.favs; if(i<a.length-1){ [a[i+1],a[i]]=[a[i],a[i+1]]; persist(); root.querySelector("#favList").innerHTML=favListHTML(); } return; }
+      const rm = e.target.closest("[data-rmfav]");
+      if(rm){ S.favs=S.favs.filter(x=>x!==+rm.dataset.rmfav); persist(); root.querySelector("#favList").innerHTML=favListHTML(); return; }
+    });
+    const fs = root.querySelector("#favSearch"), fh = root.querySelector("#favHits");
+    fs.addEventListener("input", ()=>{
+      const q=fs.value.trim(); if(q.length<2){ fh.innerHTML=""; return; }
+      fh.innerHTML = searchMovies(q.toLowerCase(),5).map(m=>miniRow(m,`data-addfav="${m[F.tt]}"`)).join("");
+    });
+    fh.addEventListener("click", e=>{
+      const b=e.target.closest("[data-addfav]"); if(!b) return;
+      const tt=+b.dataset.addfav;
+      if(!S.favs.includes(tt)) S.favs.push(tt);
+      const m=BYID.get(tt); if(m) learn(m, 1.1);
+      persist(); fs.value=""; fh.innerHTML="";
+      root.querySelector("#favList").innerHTML=favListHTML();
+    });
+    wireLetterboxd(root);
+    root.querySelector("#pTheme").onclick = ()=>{
+      const cur = document.documentElement.getAttribute("data-theme");
+      const next = cur==="light" ? "dark" : cur==="dark" ? "" : "light";
+      if(next) document.documentElement.setAttribute("data-theme", next);
+      else document.documentElement.removeAttribute("data-theme");
+      try{ localStorage.setItem("movinite.theme", next); }catch(e){}
+    };
+    root.querySelector("#pWipe").onclick = ()=>{
+      if(!confirm("Wirklich alles löschen — Tastesprofil, Listen und Favoriten?")) return;
+      S = blankState(); persist(); closePanel(); renderOnboarding(1);
+    };
+    root.querySelector("#pCouple").onclick = openCouple;
+  });
+}
+function favListHTML(){
+  if(!S.favs.length) return `<p class="note">Noch leer. Such oben deine Lieblingsfilme und bau dir deine Bestenliste.</p>`;
+  return S.favs.map((tt,i)=>{
+    const m = BYID.get(tt); if(!m) return "";
+    const ps = posterStyle(m);
+    return `<div class="mitem" style="cursor:default">
+      <span class="rank ${i===0?"top":""}">${i+1}</span>
+      <span class="mthumb" style="${ps?ps:"background:"+gradOf(m)}">${ps?"":`<span class="ini">${esc(m[F.ti][0])}</span>`}</span>
+      <span class="mmeta"><span class="t">${esc(m[F.ti])}</span><span class="s">${m[F.y]} · ${esc(m[F.d].map(nm)[0]||"")}</span></span>
+      <button class="iconbtn" data-up="${i}" style="width:28px;height:28px" aria-label="Höher"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+      <button class="iconbtn" data-down="${i}" style="width:28px;height:28px" aria-label="Tiefer"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg></button>
+      <button class="iconbtn" data-rmfav="${tt}" style="width:28px;height:28px" aria-label="Entfernen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>`;
+  }).join("");
+}
+
+/* ======================= Abend-Modus ======================= */
+function openCouple(){
+  const p = S.partner;
+  openPanel("Abend zu zweit", `
+    <div class="field">
+      <label class="lab" for="cName">Wer schaut mit?</label>
+      <input class="inp" id="cName" value="${esc(p?p.name:"")}" placeholder="Name">
+    </div>
+    <div class="field"><span class="lab">Ihre Lieblingsfilme</span>
+      <div class="note">Such fünf bis zehn Filme, die sie liebt. Daraus baue ich ihr Profile — und der Stapel zeigt dann nur noch, was zu euch beiden passt.</div>
+      <input class="inp" id="cSearch" placeholder="Film suchen">
+      <div id="cHits" class="mlist"></div>
+      <div id="cList" class="mlist">${coupleListHTML()}</div>
+    </div>
+    ${p&&p.favs&&p.favs.length?`<div class="field"><span class="lab">Gemeinsamer Stapel</span>
+      <div class="row">
+        <button class="toggle ${S.coupleOn?"on":""}" id="cOn">Abend-Modus an</button>
+      </div>
+      <div class="note">Ein Film kommt nur durch, wenn er zu euch beiden passt. Was einer von euch schon gesehen hat, fliegt raus.</div></div>`:""}
+  `, root=>{
+    root.querySelector("#cName").addEventListener("change", e=>{
+      S.partner = S.partner || {name:"", favs:[], w:{}, n:{}};
+      S.partner.name = e.target.value.trim(); persist();
+    });
+    const cs = root.querySelector("#cSearch"), ch = root.querySelector("#cHits");
+    cs.addEventListener("input", ()=>{
+      const q=cs.value.trim(); if(q.length<2){ ch.innerHTML=""; return; }
+      ch.innerHTML = searchMovies(q.toLowerCase(),5).map(m=>miniRow(m,`data-cadd="${m[F.tt]}"`)).join("");
+    });
+    ch.addEventListener("click", e=>{
+      const b=e.target.closest("[data-cadd]"); if(!b) return;
+      S.partner = S.partner || {name:"", favs:[], w:{}, n:{}};
+      const tt=+b.dataset.cadd;
+      if(!S.partner.favs.includes(tt)){
+        S.partner.favs.push(tt);
+        const m=BYID.get(tt);
+        if(m) for(const [k,st] of feats(m)){ S.partner.w[k]=(S.partner.w[k]||0)+1.2*st; S.partner.n[k]=(S.partner.n[k]||0)+1.2*st; }
+      }
+      persist(); cs.value=""; ch.innerHTML="";
+      root.querySelector("#cList").innerHTML=coupleListHTML();
+    });
+    root.addEventListener("click", e=>{
+      const r=e.target.closest("[data-crm]");
+      if(r){ S.partner.favs=S.partner.favs.filter(x=>x!==+r.dataset.crm); persist(); root.querySelector("#cList").innerHTML=coupleListHTML(); }
+      const on=e.target.closest("#cOn");
+      if(on){ S.coupleOn=!S.coupleOn; on.classList.toggle("on",S.coupleOn); persist(); refillQueue(); paint();
+              toast(S.coupleOn?"Abend-Modus an — nur noch gemeinsame Treffer.":"Abend-Modus aus."); }
+    });
+  });
+}
+function coupleListHTML(){
+  const p=S.partner;
+  if(!p||!p.favs.length) return `<p class="note">Noch keine Filme.</p>`;
+  return p.favs.map(tt=>{
+    const m=BYID.get(tt); if(!m) return "";
+    const ps=posterStyle(m);
+    return `<div class="mitem" style="cursor:default">
+      <span class="mthumb" style="${ps?ps:"background:"+gradOf(m)}">${ps?"":`<span class="ini">${esc(m[F.ti][0])}</span>`}</span>
+      <span class="mmeta"><span class="t">${esc(m[F.ti])}</span><span class="s">${m[F.y]}</span></span>
+      <button class="iconbtn" data-crm="${tt}" style="width:28px;height:28px" aria-label="Entfernen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>`;
+  }).join("");
+}
+/* ======================= Start ======================= */
+$("#bFilters").onclick = openFilterss;
+$("#bList").onclick = openLists;
+$("#bProfilee").onclick = openProfilee;
+try{ const th=localStorage.getItem("movinite.theme"); if(th) document.documentElement.setAttribute("data-theme",th); }catch(e){}
+
+(async function start(){
+  try{
+    await loadAll();
+    await bootStore();
+    buildPack();
+    if(!S.born) renderOnboarding(1);
+    else renderDeck();
+  }catch(err){
+    main.className="loadWrap";
+    main.innerHTML = `<div><h3 class="serif" style="font-size:20px;margin:0 0 8px">Die Daten kamen nicht durch</h3>
+      <p class="note">${esc(err.message||err)}</p></div>`;
+  }
+})();
+</script>
+</body>
+</html>
