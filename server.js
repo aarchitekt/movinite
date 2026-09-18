@@ -1,4 +1,4 @@
-// Filmabend — schlanker statischer Server ohne Abhängigkeiten.
+// Movinite — schlanker statischer Server ohne Abhängigkeiten.
 // Liefert vorkomprimierte JSON (gzip) direkt aus, WebP-Poster-Sheets,
 // und die App selbst. Kein Datenbank-Addon nötig -> minimale Railway-Kosten.
 const http = require("http");
@@ -38,9 +38,17 @@ function serveStatic(req, res, urlPath) {
   if (!full.startsWith(PUB)) return send(res, 403, "forbidden");
 
   const isGz = full.endsWith(".json.gz");
-  const tryPath = full;
-  fs.stat(tryPath, (err, st) => {
-    if (err || !st.isFile()) return send(res, 404, "not found");
+  // Keep old uploads working: some Railway/GitHub deployments placed the
+  // generated data directly in public/ instead of public/data/.
+  const candidates = [full];
+  if (urlPath.startsWith("/data/")) candidates.push(path.join(PUB, path.basename(safe)));
+  const serve = (index) => {
+    const tryPath = candidates[index];
+    fs.stat(tryPath, (err, st) => {
+      if (err || !st.isFile()) {
+        if (index + 1 < candidates.length) return serve(index + 1);
+        return send(res, 404, "not found");
+      }
     const ext = isGz ? ".json" : path.extname(full);
     const headers = {
       "Content-Type": TYPES[ext] || "application/octet-stream",
@@ -49,7 +57,9 @@ function serveStatic(req, res, urlPath) {
     if (isGz) headers["Content-Encoding"] = "gzip";
     res.writeHead(200, headers);
     fs.createReadStream(tryPath).pipe(res);
-  });
+    });
+  };
+  serve(0);
 }
 
 // --- winzige, dateibasierte Speicherung des Geschmacksprofils pro Gerät/Browser ---
@@ -146,4 +156,4 @@ const server = http.createServer((req, res) => {
   send(res, 404, "not found");
 });
 
-server.listen(PORT, () => console.log("Filmabend server on :" + PORT));
+server.listen(PORT, () => console.log("Movinite server on :" + PORT));
